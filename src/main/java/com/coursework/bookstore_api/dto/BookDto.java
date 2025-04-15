@@ -12,8 +12,8 @@ public class BookDto {
     private int id;
     private String title;
     private List<String> authorNames = new ArrayList<>();
+    private String publisher;
 //    private String isbn = null;
-//    private Publisher publisher = null;
 
     public static BookDto from(Book book) {
         BookDto dto = new BookDto();
@@ -21,6 +21,7 @@ public class BookDto {
         dto.title = book.getTitle();
         dto.authorNames = book.getAuthors().stream()
                 .map(author -> author.getFirstName() + " " + author.getLastName()).collect(Collectors.toList());
+        dto.publisher = book.getPublisher().getPublisherName();
         return dto;
     }
 

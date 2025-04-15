@@ -17,6 +17,7 @@ import java.util.List;
 @Schema(name = "Book", description = "The book DB-entity")
 public class Book {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     private int id;
 
@@ -27,6 +28,14 @@ public class Book {
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
     inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id"))
     private List<Author> authors = new ArrayList<>();
-//    private String isbn = null;
-//    private Publisher publisher = null;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "number_in_stock")
+    private int numberInStock;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "publisher_id")
+    private Publisher publisher;
 }
