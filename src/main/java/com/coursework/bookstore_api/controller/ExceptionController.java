@@ -1,6 +1,6 @@
 package com.coursework.bookstore_api.controller;
 
-import com.coursework.bookstore_api.exceptions.BookNotFoundException;
+import com.coursework.bookstore_api.exceptions.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,4 +26,45 @@ public class ExceptionController {
         return ResponseEntity.status(404).body(e.getMessage());
     }
 
+    @ExceptionHandler(AuthorNotFoundException.class)
+    public ResponseEntity<String> authorNotFoundException(AuthorNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<String> customerNotFoundException(CustomerNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+
+    @ExceptionHandler(GenreNotFoundException.class)
+    public ResponseEntity<String> genreNotFoundException(GenreNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+
+    @ExceptionHandler(LanguageNotFoundException.class)
+    public ResponseEntity<String> languageNotFoundException(LanguageNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<String> orderNotFoundException(OrderNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PublisherNotFoundException.class)
+    public ResponseEntity<String> publisherNotFoundException(PublisherNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<String> reviewNotFoundException(ReviewNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
 }

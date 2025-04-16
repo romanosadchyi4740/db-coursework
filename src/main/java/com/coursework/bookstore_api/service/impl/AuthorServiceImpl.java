@@ -1,0 +1,53 @@
+package com.coursework.bookstore_api.service.impl;
+
+import com.coursework.bookstore_api.dto.AuthorDto;
+import com.coursework.bookstore_api.exceptions.AuthorNotFoundException;
+import com.coursework.bookstore_api.model.Author;
+import com.coursework.bookstore_api.repository.AuthorRepository;
+import com.coursework.bookstore_api.service.AuthorService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class AuthorServiceImpl implements AuthorService {
+    private final AuthorRepository authorRepository;
+
+    @Override
+    public List<AuthorDto> findAll() {
+        return authorRepository.findAll().stream().map(AuthorDto::from).collect(Collectors.toList());
+    }
+
+    @Override
+    public AuthorDto findById(int id) {
+        return AuthorDto.from(Objects.requireNonNull(authorRepository
+                .findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found"))));
+    }
+
+    @Override
+    public AuthorDto save(AuthorDto authorDto) {
+        Author author = AuthorDto.toAuthor(authorDto);
+        return AuthorDto.from(authorRepository.save(author));
+    }
+
+    @Override
+    public AuthorDto update(int id, AuthorDto authorDto) {
+        Author existingAuthor = authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
+
+        existingAuthor.setFirstName(authorDto.getFirstName());
+        existingAuthor.setLastName(authorDto.getLastName());
+
+        return AuthorDto.from(authorRepository.save(existingAuthor));
+    }
+
+    @Override
+    public void deleteById(int id) {
+        authorRepository.deleteById(id);
+    }
+}

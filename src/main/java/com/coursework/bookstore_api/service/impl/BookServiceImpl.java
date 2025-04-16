@@ -2,7 +2,12 @@ package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.BookDto;
 import com.coursework.bookstore_api.exceptions.BookNotFoundException;
+import com.coursework.bookstore_api.model.Author;
+import com.coursework.bookstore_api.model.Book;
+import com.coursework.bookstore_api.model.Publisher;
+import com.coursework.bookstore_api.repository.AuthorRepository;
 import com.coursework.bookstore_api.repository.BookRepository;
+import com.coursework.bookstore_api.repository.PublisherRepository;
 import com.coursework.bookstore_api.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final PublisherRepository publisherRepository;
 
     @Override
     public List<BookDto> findAll() {
@@ -28,4 +35,42 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new BookNotFoundException("Book not found"))));
     }
 
+    @Override
+    public BookDto save(BookDto bookDto) {
+        Book book = BookDto.toBook(bookDto);
+
+        // Set the publisher for the book
+        if (bookDto.getPublisher() != null) {
+            Publisher publisher = publisherRepository.findById(Integer.parseInt(bookDto.getPublisher()))
+                    .orElseThrow(() -> new RuntimeException("Publisher not found"));
+            book.setPublisher(publisher);
+        }
+
+        // Save the book first to get an ID
+        book = bookRepository.save(book);
+
+        return BookDto.from(book);
+    }
+
+    @Override
+    public BookDto update(int id, BookDto bookDto) {
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+
+        existingBook.setTitle(bookDto.getTitle());
+
+        // Update publisher if it has changed
+        if (bookDto.getPublisher() != null) {
+            Publisher publisher = publisherRepository.findById(Integer.parseInt(bookDto.getPublisher()))
+                    .orElseThrow(() -> new RuntimeException("Publisher not found"));
+            existingBook.setPublisher(publisher);
+        }
+
+        return BookDto.from(bookRepository.save(existingBook));
+    }
+
+    @Override
+    public void deleteById(int id) {
+        bookRepository.deleteById(id);
+    }
 }

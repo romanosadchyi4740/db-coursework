@@ -9,11 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,4 +48,40 @@ public class BookController {
         return ResponseEntity.ok(bookService.findById(bookId));
     }
 
+    @PostMapping("/books")
+    @Operation(summary = "Creating a new book",
+            description = "Creates a new book in the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto.class))
+            })
+    })
+    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) {
+        return new ResponseEntity<>(bookService.save(bookDto), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/books/{bookId}")
+    @Operation(summary = "Updating an existing book",
+            description = "Updates an existing book in the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto.class))
+            })
+    })
+    public ResponseEntity<BookDto> updateBook(@PathVariable int bookId, @RequestBody BookDto bookDto) {
+        return ResponseEntity.ok(bookService.update(bookId, bookDto));
+    }
+
+    @DeleteMapping("/books/{bookId}")
+    @Operation(summary = "Deleting a book",
+            description = "Deletes a book from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "No Content")
+    })
+    public ResponseEntity<Void> deleteBook(@PathVariable int bookId) {
+        bookService.deleteById(bookId);
+        return ResponseEntity.noContent().build();
+    }
 }
