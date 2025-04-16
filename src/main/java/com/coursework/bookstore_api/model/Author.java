@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -26,4 +29,9 @@ public class Author {
 
     @Column(name = "pseudonym")
     private String pseudonym = "";
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"))
+    private List<Book> books = new ArrayList<>();
 }

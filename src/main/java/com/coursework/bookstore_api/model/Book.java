@@ -43,4 +43,8 @@ public class Book {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "language_id")
+    private Language language;
 }
