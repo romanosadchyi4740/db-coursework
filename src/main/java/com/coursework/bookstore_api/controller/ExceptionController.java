@@ -1,5 +1,6 @@
 package com.coursework.bookstore_api.controller;
 
+import com.coursework.bookstore_api.exceptions.BookNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class ExceptionController {
     public ResponseEntity<String> exception(Exception e) {
         log.error("General exception caught: {}", e.getMessage());
         return ResponseEntity.status(500).body(e.getMessage());
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<String> bookNotFoundException(BookNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(404).body(e.getMessage());
     }
 
 }

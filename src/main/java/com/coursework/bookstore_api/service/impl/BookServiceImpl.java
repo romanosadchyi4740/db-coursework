@@ -1,6 +1,7 @@
 package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.BookDto;
+import com.coursework.bookstore_api.exceptions.BookNotFoundException;
 import com.coursework.bookstore_api.repository.BookRepository;
 import com.coursework.bookstore_api.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto findById(int id) {
-        return BookDto.from(Objects.requireNonNull(bookRepository.findById(id).orElse(null)));
+        return BookDto.from(Objects.requireNonNull(bookRepository
+                .findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"))));
     }
+
 }
