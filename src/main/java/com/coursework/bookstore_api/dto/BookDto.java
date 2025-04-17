@@ -13,7 +13,6 @@ public class BookDto {
     private String title;
     private List<String> authorNames = new ArrayList<>();
     private String publisher;
-//    private String isbn = null;
 
     public static BookDto from(Book book) {
         BookDto dto = new BookDto();
