@@ -21,14 +21,8 @@ public class Author {
     @Column(name = "author_id")
     private int id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "pseudonym")
-    private String pseudonym = "";
+    @Column(name = "name")
+    private String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id"),

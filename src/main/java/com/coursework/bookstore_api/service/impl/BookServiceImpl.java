@@ -1,8 +1,8 @@
 package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.BookDto;
+import com.coursework.bookstore_api.dto.response.BooksResponse;
 import com.coursework.bookstore_api.exceptions.BookNotFoundException;
-import com.coursework.bookstore_api.model.Author;
 import com.coursework.bookstore_api.model.Book;
 import com.coursework.bookstore_api.model.Publisher;
 import com.coursework.bookstore_api.repository.AuthorRepository;
@@ -10,6 +10,9 @@ import com.coursework.bookstore_api.repository.BookRepository;
 import com.coursework.bookstore_api.repository.PublisherRepository;
 import com.coursework.bookstore_api.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +29,24 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookDto> findAll() {
         return bookRepository.findAll().stream().map(BookDto::from).collect(Collectors.toList());
+    }
+
+    @Override
+    public BooksResponse findAll(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Book> booksPage = bookRepository.findAll(pageable);
+        List<Book> books = booksPage.getContent();
+        List<BookDto> content = books.stream().map(BookDto::from).toList();
+
+        BooksResponse booksResponse = new BooksResponse();
+        booksResponse.setContent(content);
+        booksResponse.setPageNo(pageNo);
+        booksResponse.setPageSize(pageSize);
+        booksResponse.setTotalElements(booksPage.getTotalElements());
+        booksResponse.setTotalPages(booksPage.getTotalPages());
+        booksResponse.setLast(booksPage.isLast());
+
+        return booksResponse;
     }
 
     @Override
@@ -59,7 +80,7 @@ public class BookServiceImpl implements BookService {
 
         existingBook.setTitle(bookDto.getTitle());
 
-        // Update publisher if it has changed
+        // Update the publisher if it has changed
         if (bookDto.getPublisher() != null) {
             Publisher publisher = publisherRepository.findById(Integer.parseInt(bookDto.getPublisher()))
                     .orElseThrow(() -> new RuntimeException("Publisher not found"));

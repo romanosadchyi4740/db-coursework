@@ -1,6 +1,7 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.BookDto;
+import com.coursework.bookstore_api.service.AuthorService;
 import com.coursework.bookstore_api.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +22,7 @@ import java.util.List;
 @Tag(name = "BookController", description = "Provides all operations with books")
 public class BookController {
     private final BookService bookService;
+    private final AuthorService authorService;
 
     @GetMapping("/books")
     @Operation(summary = "Finding all the books from the DB",
@@ -83,5 +85,18 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable int bookId) {
         bookService.deleteById(bookId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/books/author/{authorId}")
+    @Operation(summary = "Finding all books by author id",
+            description = "Gets all books by author id from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto[].class))
+            })
+    })
+    public ResponseEntity<List<BookDto>> getBooksByAuthorId(@PathVariable int authorId) {
+        return ResponseEntity.ok(authorService.getAllBooksForAuthor(authorId));
     }
 }
