@@ -19,7 +19,7 @@ public class OrderDto {
         dto.amount = order.getAmount();
         dto.paymentDate = order.getPaymentDate();
         dto.customerId = order.getCustomer().getId();
-        dto.customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
+        dto.customerName = order.getCustomer().getUsername();
         return dto;
     }
 

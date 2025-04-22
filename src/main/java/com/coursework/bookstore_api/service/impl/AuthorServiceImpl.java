@@ -1,11 +1,16 @@
 package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.AuthorDto;
+import com.coursework.bookstore_api.dto.BookDto;
+import com.coursework.bookstore_api.dto.response.AuthorsResponse;
 import com.coursework.bookstore_api.exceptions.AuthorNotFoundException;
 import com.coursework.bookstore_api.model.Author;
 import com.coursework.bookstore_api.repository.AuthorRepository;
 import com.coursework.bookstore_api.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +25,24 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<AuthorDto> findAll() {
         return authorRepository.findAll().stream().map(AuthorDto::from).collect(Collectors.toList());
+    }
+
+    @Override
+    public AuthorsResponse findAll(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Author> authorsPage = authorRepository.findAll(pageable);
+        List<Author> authors = authorsPage.getContent();
+        List<AuthorDto> content = authors.stream().map(AuthorDto::from).toList();
+
+        AuthorsResponse authorsResponse = new AuthorsResponse();
+        authorsResponse.setContent(content);
+        authorsResponse.setPageNo(pageNo);
+        authorsResponse.setPageSize(pageSize);
+        authorsResponse.setTotalElements(authorsPage.getTotalElements());
+        authorsResponse.setTotalPages(authorsPage.getTotalPages());
+        authorsResponse.setLast(authorsPage.isLast());
+
+        return authorsResponse;
     }
 
     @Override
@@ -39,9 +62,7 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorDto update(int id, AuthorDto authorDto) {
         Author existingAuthor = authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
-
-        existingAuthor.setFirstName(authorDto.getFirstName());
-        existingAuthor.setLastName(authorDto.getLastName());
+        existingAuthor.setName(authorDto.getName());
 
         return AuthorDto.from(authorRepository.save(existingAuthor));
     }
@@ -49,5 +70,15 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteById(int id) {
         authorRepository.deleteById(id);
+    }
+
+    @Override
+    public List<BookDto> getAllBooksForAuthor(int id) {
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found"))
+                .getBooks()
+                .stream()
+                .map(BookDto::from)
+                .collect(Collectors.toList());
     }
 }

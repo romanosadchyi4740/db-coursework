@@ -40,9 +40,8 @@ public class CustomerServiceImpl implements CustomerService {
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
-        existingCustomer.setFirstName(customerDto.getFirstName());
-        existingCustomer.setLastName(customerDto.getLastName());
         existingCustomer.setUsername(customerDto.getUsername());
+        existingCustomer.setEmail(customerDto.getEmail());
 
         return CustomerDto.from(customerRepository.save(existingCustomer));
     }

@@ -15,7 +15,7 @@ public class ReviewDto {
         dto.id = review.getId();
         dto.text = review.getText();
         dto.reviewerId = review.getReviewer().getId();
-        dto.reviewerName = review.getReviewer().getFirstName() + " " + review.getReviewer().getLastName();
+        dto.reviewerName = review.getReviewer().getUsername();
         return dto;
     }
 

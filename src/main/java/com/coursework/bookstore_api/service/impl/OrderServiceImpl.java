@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
         existingOrder.setAmount(orderDto.getAmount());
         existingOrder.setPaymentDate(orderDto.getPaymentDate());
 
-        // Update customer if it has changed
+        // Update the customer if it has changed
         if (existingOrder.getCustomer().getId() != orderDto.getCustomerId()) {
             Customer customer = customerRepository.findById(orderDto.getCustomerId())
                     .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));

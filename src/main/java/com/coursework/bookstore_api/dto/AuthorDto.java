@@ -6,22 +6,19 @@ import lombok.Data;
 @Data
 public class AuthorDto {
     private int id;
-    private String firstName;
-    private String lastName;
+    private String name;
 
     public static AuthorDto from(Author author) {
         AuthorDto dto = new AuthorDto();
         dto.id = author.getId();
-        dto.firstName = author.getFirstName();
-        dto.lastName = author.getLastName();
+        dto.name = author.getName();
         return dto;
     }
 
     public static Author toAuthor(AuthorDto dto) {
         Author author = new Author();
         author.setId(dto.id);
-        author.setFirstName(dto.firstName);
-        author.setLastName(dto.lastName);
+        author.setName(dto.name);
         return author;
     }
 }
