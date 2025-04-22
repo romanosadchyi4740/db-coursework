@@ -1,6 +1,7 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.AuthorDto;
+import com.coursework.bookstore_api.dto.response.AuthorsResponse;
 import com.coursework.bookstore_api.service.AuthorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +23,7 @@ import java.util.List;
 public class AuthorController {
     private final AuthorService authorService;
 
-    @GetMapping("/authors")
+    @GetMapping("/authors/all")
     @Operation(summary = "Finding all the authors from the DB",
             description = "Gets all existing authors from the DB")
     @ApiResponses(value = {
@@ -33,6 +34,22 @@ public class AuthorController {
     })
     public ResponseEntity<List<AuthorDto>> getAuthors() {
         return ResponseEntity.ok(authorService.findAll());
+    }
+
+    @GetMapping("/authors")
+    @Operation(summary = "Finding a batch of authors from the DB",
+            description = "Gets a batch of authors from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = AuthorsResponse.class))
+            })
+    })
+    public ResponseEntity<AuthorsResponse> getAuthors(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(authorService.findAll(pageNo, pageSize));
     }
 
     @GetMapping("/authors/{authorId}")

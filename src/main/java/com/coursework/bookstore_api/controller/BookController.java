@@ -1,8 +1,10 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.BookDto;
+import com.coursework.bookstore_api.dto.response.BooksResponse;
 import com.coursework.bookstore_api.service.AuthorService;
 import com.coursework.bookstore_api.service.BookService;
+import com.coursework.bookstore_api.util.DatabaseTableSerializer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,10 +12,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -23,18 +33,34 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
+    private final DatabaseTableSerializer serializer;
 
-    @GetMapping("/books")
+    @GetMapping("/books/all")
     @Operation(summary = "Finding all the books from the DB",
             description = "Gets all existing books from the DB")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = {
-                            @Content(mediaType = "application/json", schema =
-                            @Schema(implementation = BookDto[].class))
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto[].class))
             })
     })
     public ResponseEntity<List<BookDto>> getBooks() {
         return ResponseEntity.ok(bookService.findAll());
+    }
+
+    @GetMapping("/books")
+    @Operation(summary = "Finding batch of books from the DB",
+            description = "Gets a batch of books from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BooksResponse.class))
+            })
+    })
+    public ResponseEntity<BooksResponse> getBooks(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        return ResponseEntity.ok(bookService.findAll(pageNo, pageSize));
     }
 
     @GetMapping("/books/{bookId}")
@@ -98,5 +124,31 @@ public class BookController {
     })
     public ResponseEntity<List<BookDto>> getBooksByAuthorId(@PathVariable int authorId) {
         return ResponseEntity.ok(authorService.getAllBooksForAuthor(authorId));
+    }
+
+    @GetMapping("/books/download")
+    @Operation(summary = "Downloading all books",
+            description = "Downloads all books from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto[].class))
+            })
+    })
+    public ResponseEntity<Resource> downloadBooks() throws IOException, SQLException {
+        Path path = serializer.writeDbTableToCsvFile("book");
+        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=book.csv");
+        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        header.add("Pragma", "no-cache");
+        header.add("Expires", "0");
+
+        return ResponseEntity.ok()
+                .headers(header)
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
     }
 }

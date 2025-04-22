@@ -48,5 +48,8 @@ public class Book {
     @JoinColumn(name = "language_id")
     private Language language;
 
-
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "order_book", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "payment_id", referencedColumnName = "payment_id"))
+    private List<Order> orders = new ArrayList<>();
 }
