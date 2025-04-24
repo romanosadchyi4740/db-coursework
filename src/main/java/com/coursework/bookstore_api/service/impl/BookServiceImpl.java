@@ -1,13 +1,12 @@
 package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.BookDto;
+import com.coursework.bookstore_api.dto.request.BookRequest;
 import com.coursework.bookstore_api.dto.response.BooksResponse;
 import com.coursework.bookstore_api.exceptions.BookNotFoundException;
+import com.coursework.bookstore_api.exceptions.LanguageNotFoundException;
 import com.coursework.bookstore_api.model.Book;
-import com.coursework.bookstore_api.model.Publisher;
-import com.coursework.bookstore_api.repository.AuthorRepository;
-import com.coursework.bookstore_api.repository.BookRepository;
-import com.coursework.bookstore_api.repository.PublisherRepository;
+import com.coursework.bookstore_api.repository.*;
 import com.coursework.bookstore_api.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +24,8 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
+    private final LanguageRepository languageRepository;
+    private final GenreRepository genreRepository;
 
     @Override
     public List<BookDto> findAll() {
@@ -57,15 +58,26 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto save(BookDto bookDto) {
-        Book book = BookDto.toBook(bookDto);
+    public BookDto save(BookRequest bookDto) {
+        System.out.println(bookDto);
+        Book book = Book.builder()
+                .title(bookDto.getTitle())
+                .price(bookDto.getPrice())
+                .numberInStock(bookDto.getNumberInStock())
+                .language(languageRepository.findById(bookDto.getLanguageId())
+                        .orElseThrow(() -> new LanguageNotFoundException("Language not found")))
+                .authors(authorRepository.findAllById(bookDto.getAuthorIds()))
+                .genres(genreRepository.findAllById(bookDto.getGenreIds()))
+                .publisher(publisherRepository.findById(Integer.parseInt(bookDto.getPublisherId()))
+                        .orElseThrow(() -> new RuntimeException("Publisher not found")))
+                .build();
 
-        // Set the publisher for the book
-        if (bookDto.getPublisher() != null) {
-            Publisher publisher = publisherRepository.findById(Integer.parseInt(bookDto.getPublisher()))
-                    .orElseThrow(() -> new RuntimeException("Publisher not found"));
-            book.setPublisher(publisher);
-        }
+//        // Set the publisher for the book
+//        if (bookDto.getPublisher() != null) {
+//            Publisher publisher = publisherRepository.findById(Integer.parseInt(bookDto.getPublisher()))
+//                    .orElseThrow(() -> new RuntimeException("Publisher not found"));
+//            book.setPublisher(publisher);
+//        }
 
         // Save the book first to get an ID
         book = bookRepository.save(book);
@@ -74,18 +86,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto update(int id, BookDto bookDto) {
+    public BookDto update(int id, BookRequest bookDto) {
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
         existingBook.setTitle(bookDto.getTitle());
-
-        // Update the publisher if it has changed
-        if (bookDto.getPublisher() != null) {
-            Publisher publisher = publisherRepository.findById(Integer.parseInt(bookDto.getPublisher()))
-                    .orElseThrow(() -> new RuntimeException("Publisher not found"));
-            existingBook.setPublisher(publisher);
-        }
+        existingBook.setPrice(bookDto.getPrice());
+        existingBook.setNumberInStock(bookDto.getNumberInStock());
+        existingBook.setLanguage(languageRepository.findById(bookDto.getLanguageId())
+                        .orElseThrow(() -> new LanguageNotFoundException("Language not found")));
+        existingBook.setAuthors(authorRepository.findAllById(bookDto.getAuthorIds()));
+        existingBook.setGenres(genreRepository.findAllById(bookDto.getGenreIds()));
+        existingBook.setPublisher(publisherRepository.findById(Integer.parseInt(bookDto.getPublisherId()))
+                        .orElseThrow(() -> new RuntimeException("Publisher not found")));
+        existingBook.setTitle(bookDto.getTitle());
 
         return BookDto.from(bookRepository.save(existingBook));
     }

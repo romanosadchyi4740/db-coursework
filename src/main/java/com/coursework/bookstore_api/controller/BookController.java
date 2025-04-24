@@ -1,6 +1,7 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.BookDto;
+import com.coursework.bookstore_api.dto.request.BookRequest;
 import com.coursework.bookstore_api.dto.response.BooksResponse;
 import com.coursework.bookstore_api.service.AuthorService;
 import com.coursework.bookstore_api.service.BookService;
@@ -85,7 +86,7 @@ public class BookController {
                     @Schema(implementation = BookDto.class))
             })
     })
-    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) {
+    public ResponseEntity<BookDto> createBook(@RequestBody BookRequest bookDto) {
         return new ResponseEntity<>(bookService.save(bookDto), HttpStatus.CREATED);
     }
 
@@ -98,7 +99,7 @@ public class BookController {
                     @Schema(implementation = BookDto.class))
             })
     })
-    public ResponseEntity<BookDto> updateBook(@PathVariable int bookId, @RequestBody BookDto bookDto) {
+    public ResponseEntity<BookDto> updateBook(@PathVariable int bookId, @RequestBody BookRequest bookDto) {
         return ResponseEntity.ok(bookService.update(bookId, bookDto));
     }
 

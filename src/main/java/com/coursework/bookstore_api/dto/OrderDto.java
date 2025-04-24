@@ -3,7 +3,10 @@ package com.coursework.bookstore_api.dto;
 import com.coursework.bookstore_api.model.Order;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class OrderDto {
@@ -12,6 +15,7 @@ public class OrderDto {
     private Date paymentDate;
     private int customerId;
     private String customerName;
+    private List<OrderItemDto> orderItems = new ArrayList<>();
 
     public static OrderDto from(Order order) {
         OrderDto dto = new OrderDto();
@@ -20,6 +24,9 @@ public class OrderDto {
         dto.paymentDate = order.getPaymentDate();
         dto.customerId = order.getCustomer().getId();
         dto.customerName = order.getCustomer().getUsername();
+        dto.orderItems = order.getOrderItems().stream()
+                .map(OrderItemDto::from)
+                .collect(Collectors.toList());
         return dto;
     }
 
@@ -28,7 +35,7 @@ public class OrderDto {
         order.setId(dto.id);
         order.setAmount(dto.amount);
         order.setPaymentDate(dto.paymentDate);
-        // Customer needs to be set separately
+        // Customer and OrderItems need to be set separately
         return order;
     }
 }

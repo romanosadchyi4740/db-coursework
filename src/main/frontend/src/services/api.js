@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from './authService';
 
 const API_URL = '/api';
 
@@ -8,6 +9,20 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Add a request interceptor to include the auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const fetchAll = async (endpoint) => {
   try {
@@ -55,6 +70,31 @@ export const remove = async (endpoint, id) => {
     return true;
   } catch (error) {
     console.error(`Error deleting ${endpoint} with id ${id}:`, error);
+    throw error;
+  }
+};
+
+export const downloadFile = async (endpoint, filename = 'downloaded-file') => {
+  try {
+    const response = await api.get(`/${endpoint}`, {
+      responseType: 'blob', // important for binary file
+    });
+
+    // Create a blob URL
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename); // set filename for download
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+    return true;
+  } catch (error) {
+    console.error(`Error downloading ${endpoint}:`, error);
     throw error;
   }
 };

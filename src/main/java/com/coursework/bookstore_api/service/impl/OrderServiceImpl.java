@@ -1,16 +1,24 @@
 package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.OrderDto;
+import com.coursework.bookstore_api.dto.OrderItemDto;
+import com.coursework.bookstore_api.exceptions.BookNotFoundException;
 import com.coursework.bookstore_api.exceptions.CustomerNotFoundException;
 import com.coursework.bookstore_api.exceptions.OrderNotFoundException;
+import com.coursework.bookstore_api.model.Book;
 import com.coursework.bookstore_api.model.Customer;
 import com.coursework.bookstore_api.model.Order;
+import com.coursework.bookstore_api.model.OrderItem;
+import com.coursework.bookstore_api.repository.BookRepository;
 import com.coursework.bookstore_api.repository.CustomerRepository;
 import com.coursework.bookstore_api.repository.OrderRepository;
 import com.coursework.bookstore_api.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -20,6 +28,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
+    private final BookRepository bookRepository;
 
     @Override
     public List<OrderDto> findAll() {
@@ -34,15 +43,52 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDto save(OrderDto orderDto) {
         Order order = OrderDto.toOrder(orderDto);
+
+        // Set current date if not provided
+        if (order.getPaymentDate() == null) {
+            order.setPaymentDate(new Date());
+        }
 
         // Set the customer for the order
         Customer customer = customerRepository.findById(orderDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
         order.setCustomer(customer);
 
-        return OrderDto.from(orderRepository.save(order));
+        // Save the order first to get an ID
+        order = orderRepository.save(order);
+
+        // Process order items
+        List<OrderItem> orderItems = new ArrayList<>();
+        double totalAmount = 0.0;
+
+        for (OrderItemDto itemDto : orderDto.getOrderItems()) {
+            Book book = bookRepository.findById(itemDto.getBookId())
+                    .orElseThrow(() -> new BookNotFoundException("Book not found with ID: " + itemDto.getBookId()));
+
+            // Create order item
+            OrderItem orderItem = new OrderItem();
+            orderItem.setBook(book);
+            orderItem.setOrder(order);
+            orderItem.setQuantity(itemDto.getQuantity());
+            orderItem.setPrice(book.getPrice()); // Use current book price
+
+            orderItems.add(orderItem);
+
+            // Add to total amount
+            totalAmount += book.getPrice() * itemDto.getQuantity();
+        }
+
+        // Update order with items and total amount
+        order.setOrderItems(orderItems);
+        order.setAmount(totalAmount);
+
+        // Save updated order
+        order = orderRepository.save(order);
+
+        return OrderDto.from(order);
     }
 
     @Override

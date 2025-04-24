@@ -3,6 +3,7 @@ package com.coursework.bookstore_api.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "book")
@@ -24,7 +26,7 @@ public class Book {
     @Column(name = "title")
     private String title;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
     inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id"))
     private List<Author> authors = new ArrayList<>();
@@ -48,8 +50,6 @@ public class Book {
     @JoinColumn(name = "language_id")
     private Language language;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(name = "order_book", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "payment_id", referencedColumnName = "payment_id"))
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
