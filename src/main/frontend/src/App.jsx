@@ -13,6 +13,7 @@ import AuthorEdit from './pages/AuthorEdit'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import Cart from './pages/Cart'
+import OrderHistory from './pages/OrderHistory'
 import Publishers from './pages/Publishers'
 // import PublisherDetails from './pages/PublisherDetails'
 // import Customers from './pages/Customers'
@@ -41,6 +42,7 @@ function App() {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/order-history" element={<OrderHistory />} />
             <Route path="/publishers" element={<Publishers />} />
             {/*<Route path="/publishers/:id" element={<PublisherDetails />} />*/}
             {/*<Route path="/customers" element={<Customers />} />*/}

@@ -45,6 +45,19 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findAll());
     }
 
+    @GetMapping("/orders-history")
+    @Operation(summary = "Finding all the orders for the current user",
+            description = "Gets all existing orders for the current user from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = OrderDto[].class))
+            })
+    })
+    public ResponseEntity<List<OrderDto>> getOrdersByCustomerId(@RequestParam int customerId) {
+        return ResponseEntity.ok(orderService.findAllByCustomerId(customerId));
+    }
+
     @GetMapping("/orders/{orderId}")
     @Operation(summary = "Finding a specific order from the DB",
             description = "Gets a specific order by id from the DB")

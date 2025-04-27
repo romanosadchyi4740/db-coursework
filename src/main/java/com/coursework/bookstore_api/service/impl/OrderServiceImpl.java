@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findAll() {
-        return orderRepository.findAll().stream().map(OrderDto::from).collect(Collectors.toList());
+        return orderRepository.findAll().stream().map(OrderDto::from).toList();
     }
 
     @Override
@@ -112,5 +111,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteById(int id) {
         orderRepository.deleteById(id);
+    }
+
+    @Override
+    public List<OrderDto> findAllByCustomerId(int customerId) {
+        return orderRepository.findAllByCustomer_Id(customerId).stream().map(OrderDto::from).toList();
     }
 }

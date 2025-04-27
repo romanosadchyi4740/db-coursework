@@ -37,6 +37,11 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
+            {authenticated && (
+              <Link to="/order-history" className="hover:text-blue-200">
+                My Orders
+              </Link>
+            )}
 
             {authenticated ? (
               <button 
