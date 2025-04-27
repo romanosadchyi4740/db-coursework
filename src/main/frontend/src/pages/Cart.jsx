@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../services/orderService';
-import { isAuthenticated, getToken } from '../services/authService';
+import {isAuthenticated, getUsername} from '../services/authService';
 
 const Cart = () => {
   const { cartItems, totalPrice, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -33,17 +33,18 @@ const Cart = () => {
       setIsCheckingOut(true);
       setCheckoutError(null);
       
-      const currentUser = getToken();
+      const currentUser = getUsername();
       
       const orderData = {
-        customerId: currentUser.id,
+        customerName: currentUser,
         orderItems: cartItems.map(item => ({
           bookId: item.id,
           quantity: item.quantity,
           price: item.price
         }))
       };
-      
+
+      console.log(orderData);
       await createOrder(orderData);
       clearCart();
       navigate('/');

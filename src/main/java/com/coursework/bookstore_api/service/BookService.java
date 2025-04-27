@@ -18,4 +18,10 @@ public interface BookService {
     BookDto update(int id, BookRequest bookDto);
 
     void deleteById(int id);
+
+    BooksResponse findAllByPublisherId(int publisherId, int pageNo, int pageSize);
+
+    BooksResponse findAllByAuthorId(int authorId, int pageNo, int pageSize);
+
+    BooksResponse findAllByGenreId(int genreId, int pageNo, int pageSize);
 }

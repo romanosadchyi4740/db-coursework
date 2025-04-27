@@ -1,7 +1,6 @@
 package com.coursework.bookstore_api.service;
 
 import com.coursework.bookstore_api.dto.AuthorDto;
-import com.coursework.bookstore_api.dto.BookDto;
 import com.coursework.bookstore_api.dto.response.AuthorsResponse;
 
 import java.util.List;
@@ -18,6 +17,4 @@ public interface AuthorService {
     AuthorDto update(int id, AuthorDto authorDto);
     
     void deleteById(int id);
-
-    List<BookDto> getAllBooksForAuthor(int id);
 }

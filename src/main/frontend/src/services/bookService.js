@@ -21,11 +21,47 @@ export const getPaginatedBooks = async (pageNo = 0, pageSize = 10) => {
   }
 };
 
+// Get books filtered by genre
+export const getBooksByGenre = async (genreId, pageNo = 0, pageSize = 10) => {
+  try {
+    const response = await api.get(`/${ENDPOINT}/genre/${genreId}?pageNo=${pageNo}&pageSize=${pageSize}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching books by genre:`, error);
+    throw error;
+  }
+};
+
+// Get books filtered by author
+export const getBooksByAuthor = async (authorId, pageNo = 0, pageSize = 10) => {
+  try {
+    const response = await api.get(`/${ENDPOINT}/author/${authorId}?pageNo=${pageNo}&pageSize=${pageSize}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching books by author:`, error);
+    throw error;
+  }
+};
+
+// Get books filtered by publisher
+export const getBooksByPublisher = async (publisherId, pageNo = 0, pageSize = 10) => {
+  try {
+    const response = await api.get(`/${ENDPOINT}/publisher/${publisherId}?pageNo=${pageNo}&pageSize=${pageSize}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching books by publisher:`, error);
+    throw error;
+  }
+};
+
 export default {
   getAllBooks,
   getBookById,
   createBook,
   updateBook,
   deleteBook,
-  getPaginatedBooks
+  getPaginatedBooks,
+  getBooksByGenre,
+  getBooksByAuthor,
+  getBooksByPublisher
 };

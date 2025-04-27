@@ -3,7 +3,6 @@ package com.coursework.bookstore_api.controller;
 import com.coursework.bookstore_api.dto.BookDto;
 import com.coursework.bookstore_api.dto.request.BookRequest;
 import com.coursework.bookstore_api.dto.response.BooksResponse;
-import com.coursework.bookstore_api.service.AuthorService;
 import com.coursework.bookstore_api.service.BookService;
 import com.coursework.bookstore_api.util.DatabaseTableSerializer;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +32,6 @@ import java.util.List;
 @Tag(name = "BookController", description = "Provides all operations with books")
 public class BookController {
     private final BookService bookService;
-    private final AuthorService authorService;
     private final DatabaseTableSerializer serializer;
 
     @GetMapping("/books/all")
@@ -123,8 +121,43 @@ public class BookController {
                     @Schema(implementation = BookDto[].class))
             })
     })
-    public ResponseEntity<List<BookDto>> getBooksByAuthorId(@PathVariable int authorId) {
-        return ResponseEntity.ok(authorService.getAllBooksForAuthor(authorId));
+    public ResponseEntity<BooksResponse> getBooksByAuthorId(
+            @PathVariable int authorId,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        return ResponseEntity.ok(bookService.findAllByAuthorId(authorId, pageNo, pageSize));
+    }
+
+    @GetMapping("/books/genre/{genreId}")
+    @Operation(summary = "Finding all books by genre id",
+            description = "Gets all books by author id from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto[].class))
+            })
+    })
+    public ResponseEntity<BooksResponse> getBooksByGenreId(
+            @PathVariable int genreId,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        return ResponseEntity.ok(bookService.findAllByGenreId(genreId, pageNo, pageSize));
+    }
+
+    @GetMapping("/books/publisher/{publisherId}")
+    @Operation(summary = "Finding all books by publisher id",
+            description = "Gets all books by author id from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto[].class))
+            })
+    })
+    public ResponseEntity<BooksResponse> getBooksByPublisherId(
+            @PathVariable int publisherId,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        return ResponseEntity.ok(bookService.findAllByPublisherId(publisherId, pageNo, pageSize));
     }
 
     @GetMapping("/books/download")

@@ -1,12 +1,12 @@
 package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.AuthorDto;
-import com.coursework.bookstore_api.dto.BookDto;
 import com.coursework.bookstore_api.dto.response.AuthorsResponse;
 import com.coursework.bookstore_api.exceptions.AuthorNotFoundException;
 import com.coursework.bookstore_api.model.Author;
 import com.coursework.bookstore_api.repository.AuthorRepository;
 import com.coursework.bookstore_api.service.AuthorService;
+import com.coursework.bookstore_api.util.PageResponseFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,18 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorsResponse findAll(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Author> authorsPage = authorRepository.findAll(pageable);
-        List<Author> authors = authorsPage.getContent();
-        List<AuthorDto> content = authors.stream().map(AuthorDto::from).toList();
-
-        AuthorsResponse authorsResponse = new AuthorsResponse();
-        authorsResponse.setContent(content);
-        authorsResponse.setPageNo(pageNo);
-        authorsResponse.setPageSize(pageSize);
-        authorsResponse.setTotalElements(authorsPage.getTotalElements());
-        authorsResponse.setTotalPages(authorsPage.getTotalPages());
-        authorsResponse.setLast(authorsPage.isLast());
-
-        return authorsResponse;
+        return PageResponseFormatter.createAuthorsPageResponse(pageNo, pageSize, authorsPage);
     }
 
     @Override
@@ -70,15 +59,5 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteById(int id) {
         authorRepository.deleteById(id);
-    }
-
-    @Override
-    public List<BookDto> getAllBooksForAuthor(int id) {
-        return authorRepository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException("Author not found"))
-                .getBooks()
-                .stream()
-                .map(BookDto::from)
-                .collect(Collectors.toList());
     }
 }

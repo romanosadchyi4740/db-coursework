@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {getPaginatedBooks, deleteBook, downloadBooks} from '../services/bookService';
+import {
+  getPaginatedBooks, 
+  deleteBook, 
+  downloadBooks, 
+  getBooksByGenre, 
+  getBooksByAuthor, 
+  getBooksByPublisher
+} from '../services/bookService';
+import { getAllGenres } from '../services/genreService';
+import { getAllAuthors } from '../services/authorService';
+import { getAllPublishers } from '../services/publisherService';
 import { isAdmin } from '../services/authService';
 import { useCart } from '../context/CartContext';
 
@@ -14,11 +24,52 @@ const Books = () => {
   const [totalElements, setTotalElements] = useState(0);
   const { addToCart } = useCart();
 
+  // Filter states
+  const [genres, setGenres] = useState([]);
+  const [authors, setAuthors] = useState([]);
+  const [publishers, setPublishers] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [selectedAuthor, setSelectedAuthor] = useState('');
+  const [selectedPublisher, setSelectedPublisher] = useState('');
+  const [activeFilter, setActiveFilter] = useState(null); // 'genre', 'author', 'publisher', or null
+
+  // Fetch filter options (genres, authors, publishers)
+  useEffect(() => {
+    const fetchFilterOptions = async () => {
+      try {
+        const [genresData, authorsData, publishersData] = await Promise.all([
+          getAllGenres(),
+          getAllAuthors(),
+          getAllPublishers()
+        ]);
+        setGenres(genresData);
+        setAuthors(authorsData);
+        setPublishers(publishersData);
+      } catch (err) {
+        console.error('Failed to fetch filter options:', err);
+      }
+    };
+
+    fetchFilterOptions();
+  }, []);
+
+  // Fetch books based on active filter
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
-        const data = await getPaginatedBooks(currentPage, pageSize);
+        let data;
+
+        if (activeFilter === 'genre' && selectedGenre) {
+          data = await getBooksByGenre(selectedGenre, currentPage, pageSize);
+        } else if (activeFilter === 'author' && selectedAuthor) {
+          data = await getBooksByAuthor(selectedAuthor, currentPage, pageSize);
+        } else if (activeFilter === 'publisher' && selectedPublisher) {
+          data = await getBooksByPublisher(selectedPublisher, currentPage, pageSize);
+        } else {
+          data = await getPaginatedBooks(currentPage, pageSize);
+        }
+
         setBooks(data.content);
         setTotalPages(data.totalPages);
         setTotalElements(data.totalElements);
@@ -31,7 +82,7 @@ const Books = () => {
     };
 
     fetchBooks();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, activeFilter, selectedGenre, selectedAuthor, selectedPublisher]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this book?')) {
@@ -55,6 +106,42 @@ const Books = () => {
     }
   };
 
+  // Handle filter changes
+  const handleGenreChange = (e) => {
+    const genreId = e.target.value;
+    setSelectedGenre(genreId);
+    setSelectedAuthor('');
+    setSelectedPublisher('');
+    setCurrentPage(0);
+    setActiveFilter(genreId ? 'genre' : null);
+  };
+
+  const handleAuthorChange = (e) => {
+    const authorId = e.target.value;
+    setSelectedAuthor(authorId);
+    setSelectedGenre('');
+    setSelectedPublisher('');
+    setCurrentPage(0);
+    setActiveFilter(authorId ? 'author' : null);
+  };
+
+  const handlePublisherChange = (e) => {
+    const publisherId = e.target.value;
+    setSelectedPublisher(publisherId);
+    setSelectedGenre('');
+    setSelectedAuthor('');
+    setCurrentPage(0);
+    setActiveFilter(publisherId ? 'publisher' : null);
+  };
+
+  const clearFilters = () => {
+    setSelectedGenre('');
+    setSelectedAuthor('');
+    setSelectedPublisher('');
+    setActiveFilter(null);
+    setCurrentPage(0);
+  };
+
   if (loading) return <div className="text-center py-10">Loading...</div>;
   if (error) return <div className="text-center py-10 text-red-600">{error}</div>;
 
@@ -64,15 +151,78 @@ const Books = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-600">Books</h1>
-        <button onClick={() => handleDownload()} className="text-blue-600 hover:text-blue-800">Download Books</button>
-        {userIsAdmin && (
-          <Link 
-            to="/books/new" 
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Add New Book
-          </Link>
-        )}
+        <div className="flex space-x-2">
+          <button onClick={() => handleDownload()} className="text-blue-600 hover:text-blue-800">Download Books</button>
+          {userIsAdmin && (
+            <Link 
+              to="/books/new" 
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Add New Book
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* Filter Controls */}
+      <div className="mb-6 bg-gray-100 p-4 rounded-lg">
+        <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0">
+          <div className="flex-1">
+            <label htmlFor="genre-filter" className="block text-sm font-medium text-gray-700 mb-1">Filter by Genre</label>
+            <select
+              id="genre-filter"
+              value={selectedGenre}
+              onChange={handleGenreChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">All Genres</option>
+              {genres.map(genre => (
+                <option key={genre.id} value={genre.id}>{genre.genreName}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex-1">
+            <label htmlFor="author-filter" className="block text-sm font-medium text-gray-700 mb-1">Filter by Author</label>
+            <select
+              id="author-filter"
+              value={selectedAuthor}
+              onChange={handleAuthorChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">All Authors</option>
+              {authors.map(author => (
+                <option key={author.id} value={author.id}>{author.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex-1">
+            <label htmlFor="publisher-filter" className="block text-sm font-medium text-gray-700 mb-1">Filter by Publisher</label>
+            <select
+              id="publisher-filter"
+              value={selectedPublisher}
+              onChange={handlePublisherChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">All Publishers</option>
+              {publishers.map(publisher => (
+                <option key={publisher.id} value={publisher.id}>{publisher.publisherName}</option>
+              ))}
+            </select>
+          </div>
+
+          {activeFilter && (
+            <div className="flex items-end">
+              <button 
+                onClick={clearFilters}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Clear Filters
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {books.length === 0 ? (

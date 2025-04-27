@@ -13,7 +13,7 @@ import AuthorEdit from './pages/AuthorEdit'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import Cart from './pages/Cart'
-// import Publishers from './pages/Publishers'
+import Publishers from './pages/Publishers'
 // import PublisherDetails from './pages/PublisherDetails'
 // import Customers from './pages/Customers'
 // import CustomerDetails from './pages/CustomerDetails'
@@ -43,7 +43,7 @@ function App() {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/cart" element={<Cart />} />
-            {/*<Route path="/publishers" element={<Publishers />} />*/}
+            <Route path="/publishers" element={<Publishers />} />
             {/*<Route path="/publishers/:id" element={<PublisherDetails />} />*/}
             {/*<Route path="/customers" element={<Customers />} />*/}
             {/*<Route path="/customers/:id" element={<CustomerDetails />} />*/}

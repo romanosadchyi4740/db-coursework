@@ -82,7 +82,16 @@ export const getUserRole = () => {
   return decodedToken?.role || null;
 };
 
-// Check if user is admin
+export const getUsername = () => {
+  const token = getToken();
+  if (!token) return null;
+
+  const decodedToken = decodeToken(token);
+  console.log(decodedToken);
+  return decodedToken?.sub || null;
+}
+
+// Check if the user is admin
 export const isAdmin = () => {
   const role = getUserRole();
   return role === 'ROLE_ADMIN';

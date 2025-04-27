@@ -8,6 +8,7 @@ import com.coursework.bookstore_api.exceptions.LanguageNotFoundException;
 import com.coursework.bookstore_api.model.Book;
 import com.coursework.bookstore_api.repository.*;
 import com.coursework.bookstore_api.service.BookService;
+import com.coursework.bookstore_api.util.PageResponseFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,18 +37,7 @@ public class BookServiceImpl implements BookService {
     public BooksResponse findAll(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Book> booksPage = bookRepository.findAll(pageable);
-        List<Book> books = booksPage.getContent();
-        List<BookDto> content = books.stream().map(BookDto::from).toList();
-
-        BooksResponse booksResponse = new BooksResponse();
-        booksResponse.setContent(content);
-        booksResponse.setPageNo(pageNo);
-        booksResponse.setPageSize(pageSize);
-        booksResponse.setTotalElements(booksPage.getTotalElements());
-        booksResponse.setTotalPages(booksPage.getTotalPages());
-        booksResponse.setLast(booksPage.isLast());
-
-        return booksResponse;
+        return PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
     }
 
     @Override
@@ -72,14 +62,6 @@ public class BookServiceImpl implements BookService {
                         .orElseThrow(() -> new RuntimeException("Publisher not found")))
                 .build();
 
-//        // Set the publisher for the book
-//        if (bookDto.getPublisher() != null) {
-//            Publisher publisher = publisherRepository.findById(Integer.parseInt(bookDto.getPublisher()))
-//                    .orElseThrow(() -> new RuntimeException("Publisher not found"));
-//            book.setPublisher(publisher);
-//        }
-
-        // Save the book first to get an ID
         book = bookRepository.save(book);
 
         return BookDto.from(book);
@@ -107,5 +89,26 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteById(int id) {
         bookRepository.deleteById(id);
+    }
+
+    @Override
+    public BooksResponse findAllByPublisherId(int publisherId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Book> booksPage = bookRepository.findAllByPublisherId(publisherId, pageable);
+        return PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
+    }
+
+    @Override
+    public BooksResponse findAllByAuthorId(int authorId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Book> booksPage = bookRepository.findByAuthors_Id(authorId, pageable);
+        return PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
+    }
+
+    @Override
+    public BooksResponse findAllByGenreId(int genreId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Book> booksPage = bookRepository.findByGenres_Id(genreId, pageable);
+        return PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
     }
 }

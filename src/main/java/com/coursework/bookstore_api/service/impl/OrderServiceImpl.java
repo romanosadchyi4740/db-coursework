@@ -47,13 +47,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto save(OrderDto orderDto) {
         Order order = OrderDto.toOrder(orderDto);
 
-        // Set current date if not provided
+        // Set the current date if not provided
         if (order.getPaymentDate() == null) {
             order.setPaymentDate(new Date());
         }
 
         // Set the customer for the order
-        Customer customer = customerRepository.findById(orderDto.getCustomerId())
+        Customer customer = customerRepository.findByUsername(orderDto.getCustomerName())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
         order.setCustomer(customer);
 
