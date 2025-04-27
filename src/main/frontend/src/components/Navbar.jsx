@@ -29,7 +29,6 @@ const Navbar = () => {
             <Link to="/publishers" className="hover:text-blue-200">Publishers</Link>
             <Link to="/customers" className="hover:text-blue-200">Customers</Link>
             <Link to="/orders" className="hover:text-blue-200">Orders</Link>
-            <Link to="/reviews" className="hover:text-blue-200">Reviews</Link>
             <Link to="/cart" className="hover:text-blue-200 relative">
               Cart
               {cartItems.length > 0 && (

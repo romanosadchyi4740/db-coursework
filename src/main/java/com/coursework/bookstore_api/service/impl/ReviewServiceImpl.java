@@ -1,10 +1,12 @@
 package com.coursework.bookstore_api.service.impl;
 
 import com.coursework.bookstore_api.dto.ReviewDto;
+import com.coursework.bookstore_api.exceptions.BookNotFoundException;
 import com.coursework.bookstore_api.exceptions.CustomerNotFoundException;
 import com.coursework.bookstore_api.exceptions.ReviewNotFoundException;
 import com.coursework.bookstore_api.model.Customer;
 import com.coursework.bookstore_api.model.Review;
+import com.coursework.bookstore_api.repository.BookRepository;
 import com.coursework.bookstore_api.repository.CustomerRepository;
 import com.coursework.bookstore_api.repository.ReviewRepository;
 import com.coursework.bookstore_api.service.ReviewService;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final CustomerRepository customerRepository;
+    private final BookRepository bookRepository;
 
     @Override
     public List<ReviewDto> findAll() {
@@ -37,10 +40,10 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto save(ReviewDto reviewDto) {
         Review review = ReviewDto.toReview(reviewDto);
 
-        // Set the reviewer for the review
-        Customer reviewer = customerRepository.findById(reviewDto.getReviewerId())
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
-        review.setReviewer(reviewer);
+        review.setReviewer(customerRepository.findById(reviewDto.getReviewerId())
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found")));
+        review.setBook(bookRepository.findById(reviewDto.getBookId())
+                .orElseThrow(() -> new BookNotFoundException("Book not found")));
 
         return ReviewDto.from(reviewRepository.save(review));
     }
@@ -52,7 +55,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         existingReview.setText(reviewDto.getText());
 
-        // Update reviewer if it has changed
         if (existingReview.getReviewer().getId() != reviewDto.getReviewerId()) {
             Customer reviewer = customerRepository.findById(reviewDto.getReviewerId())
                     .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));

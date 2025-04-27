@@ -19,8 +19,6 @@ import Publishers from './pages/Publishers'
 // import CustomerDetails from './pages/CustomerDetails'
 // import Orders from './pages/Orders'
 // import OrderDetails from './pages/OrderDetails'
-// import Reviews from './pages/Reviews'
-// import ReviewDetails from './pages/ReviewDetails'
 import NotFound from './pages/NotFound'
 import { CartProvider } from './context/CartContext'
 
@@ -49,8 +47,6 @@ function App() {
             {/*<Route path="/customers/:id" element={<CustomerDetails />} />*/}
             {/*<Route path="/orders" element={<Orders />} />*/}
             {/*<Route path="/orders/:id" element={<OrderDetails />} />*/}
-            {/*<Route path="/reviews" element={<Reviews />} />*/}
-            {/*<Route path="/reviews/:id" element={<ReviewDetails />} />*/}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

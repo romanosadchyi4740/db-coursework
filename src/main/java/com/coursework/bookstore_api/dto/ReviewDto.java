@@ -9,6 +9,7 @@ public class ReviewDto {
     private String text;
     private int reviewerId;
     private String reviewerName;
+    private int bookId;
 
     public static ReviewDto from(Review review) {
         ReviewDto dto = new ReviewDto();
@@ -16,6 +17,7 @@ public class ReviewDto {
         dto.text = review.getText();
         dto.reviewerId = review.getReviewer().getId();
         dto.reviewerName = review.getReviewer().getUsername();
+        dto.bookId = review.getBook().getId();
         return dto;
     }
 
@@ -23,7 +25,6 @@ public class ReviewDto {
         Review review = new Review();
         review.setId(dto.id);
         review.setText(dto.text);
-        // Reviewer needs to be set separately
         return review;
     }
 }

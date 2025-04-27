@@ -87,8 +87,15 @@ export const getUsername = () => {
   if (!token) return null;
 
   const decodedToken = decodeToken(token);
-  console.log(decodedToken);
   return decodedToken?.sub || null;
+}
+
+export const getUserId = () => {
+  const token = getToken();
+  if (!token) return null;
+
+  const decodedToken = decodeToken(token);
+  return decodedToken?.id || null;
 }
 
 // Check if the user is admin
@@ -105,5 +112,7 @@ export default {
   isAuthenticated,
   decodeToken,
   getUserRole,
+  getUsername,
+  getUserId,
   isAdmin
 };
