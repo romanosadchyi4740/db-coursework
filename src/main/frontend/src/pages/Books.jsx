@@ -232,7 +232,18 @@ const Books = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {books.map(book => (
               <div key={book.id} className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-2 text-black bg-gray-200 rounded-[5px] p-[10px] shadow-lg">{book.title}</h2>
+                <div className="flex items-center space-x-[5px]">
+                  <img
+                    className="h-32 object-cover rounded-lg"
+                    src={book.imageUrl !== null ? book.imageUrl : "default-book-icon.png"}
+                    alt=""
+                  />
+
+                  <h2 className="text-xl font-semibold mb-2 text-black bg-gray-200 rounded-[5px] p-[10px] shadow-lg">
+                    {book.title}
+                  </h2>
+                </div>
+
                 <p className="text-gray-600 mb-2">
                   <span className="font-semibold">Authors:</span> {book.authorNames.join(', ')}
                 </p>

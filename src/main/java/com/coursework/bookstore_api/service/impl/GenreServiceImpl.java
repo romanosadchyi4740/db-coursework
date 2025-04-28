@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public List<GenreDto> findAll() {
-        return genreRepository.findAll().stream().map(GenreDto::from).collect(Collectors.toList());
+        return genreRepository.findAll().stream().map(GenreDto::from).toList();
     }
 
     @Override

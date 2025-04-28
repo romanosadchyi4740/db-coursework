@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDto> findAll() {
-        return customerRepository.findAll().stream().map(CustomerDto::from).collect(Collectors.toList());
+        return customerRepository.findAll().stream().map(CustomerDto::from).toList();
     }
 
     @Override

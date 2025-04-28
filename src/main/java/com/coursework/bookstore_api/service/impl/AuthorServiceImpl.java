@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<AuthorDto> findAll() {
-        return authorRepository.findAll().stream().map(AuthorDto::from).collect(Collectors.toList());
+        return authorRepository.findAll().stream().map(AuthorDto::from).toList();
     }
 
     @Override

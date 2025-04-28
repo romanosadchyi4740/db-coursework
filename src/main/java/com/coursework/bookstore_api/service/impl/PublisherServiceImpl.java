@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     public List<PublisherDto> findAll() {
-        return publisherRepository.findAll().stream().map(PublisherDto::from).collect(Collectors.toList());
+        return publisherRepository.findAll().stream().map(PublisherDto::from).toList();
     }
 
     @Override

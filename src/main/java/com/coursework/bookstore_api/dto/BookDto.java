@@ -17,6 +17,7 @@ public class BookDto {
     private String publisher;
     private double price;
     private int numberInStock;
+    private String imageUrl;
     private String language;
     private List<String> genreNames = new ArrayList<>();
     private List<Integer> reviewIds = new ArrayList<>();
@@ -29,6 +30,7 @@ public class BookDto {
         dto.publisher = book.getPublisher().getPublisherName();
         dto.price = book.getPrice();
         dto.numberInStock = book.getNumberInStock();
+        dto.imageUrl = book.getImageUrl();
         dto.language = book.getLanguage().getLanguage();
         dto.genreNames = book.getGenres().stream().map(Genre::getGenreName).toList();
         dto.reviewIds = book.getReviews().stream().map(Review::getId).toList();

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public List<LanguageDto> findAll() {
-        return languageRepository.findAll().stream().map(LanguageDto::from).collect(Collectors.toList());
+        return languageRepository.findAll().stream().map(LanguageDto::from).toList();
     }
 
     @Override

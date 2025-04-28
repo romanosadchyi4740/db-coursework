@@ -6,7 +6,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class OrderDto {
@@ -26,7 +25,7 @@ public class OrderDto {
         dto.customerName = order.getCustomer().getUsername();
         dto.orderItems = order.getOrderItems().stream()
                 .map(OrderItemDto::from)
-                .collect(Collectors.toList());
+                .toList();
         return dto;
     }
 

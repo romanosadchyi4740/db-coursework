@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> findAll() {
-        return bookRepository.findAll().stream().map(BookDto::from).collect(Collectors.toList());
+        return bookRepository.findAll().stream().map(BookDto::from).toList();
     }
 
     @Override
@@ -88,7 +87,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteById(int id) {
-        bookRepository.deleteById(id);
+        Book bookToDelete = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
+        bookToDelete.getReviews().clear();
+        bookToDelete.getAuthors().clear();
+        bookToDelete.getGenres().clear();
+        bookToDelete.getOrderItems().clear();
+
+        bookRepository.save(bookToDelete);
+
+        bookRepository.delete(bookToDelete);
     }
 
     @Override

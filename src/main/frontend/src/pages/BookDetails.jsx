@@ -112,6 +112,11 @@ const BookDetails = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
+      <img
+        className="w-[100px] h-[100px] object-cover rounded-lg"
+        src={book.imageUrl !== null ? book.imageUrl : "default-book-icon.png"}
+        alt=""
+      />
       <div className="flex justify-between items-start mb-6">
         <h1 className="text-3xl font-bold text-blue-600">{book.title}</h1>
         {userIsAdmin && (
