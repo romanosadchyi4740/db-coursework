@@ -3,7 +3,9 @@ package com.coursework.bookstore_api.controller;
 import com.coursework.bookstore_api.dto.BookDto;
 import com.coursework.bookstore_api.dto.request.BookRequest;
 import com.coursework.bookstore_api.dto.response.BooksResponse;
+import com.coursework.bookstore_api.model.LogLevel;
 import com.coursework.bookstore_api.service.BookService;
+import com.coursework.bookstore_api.service.DatabaseLoggerService;
 import com.coursework.bookstore_api.util.DatabaseTableSerializer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +35,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "BookController", description = "Provides all operations with books")
 public class BookController {
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
+
     private final BookService bookService;
     private final DatabaseTableSerializer serializer;
+    private final DatabaseLoggerService databaseLoggerService;
 
     @GetMapping("/books/all")
     @Operation(summary = "Finding all the books from the DB",
@@ -44,6 +51,8 @@ public class BookController {
             })
     })
     public ResponseEntity<List<BookDto>> getBooks() {
+        logger.info("Getting all books from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all books from the DB");
         return ResponseEntity.ok(bookService.findAll());
     }
 
@@ -59,6 +68,8 @@ public class BookController {
     public ResponseEntity<BooksResponse> getBooks(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        logger.info("Getting a batch of books from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting a batch of books from the DB");
         return ResponseEntity.ok(bookService.findAll(pageNo, pageSize));
     }
 
@@ -72,6 +83,8 @@ public class BookController {
             })
     })
     public ResponseEntity<BookDto> getBook(@PathVariable int bookId) {
+        logger.info("Getting a book from the DB by id: {}", bookId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting a book from the DB by id: " + bookId);
         return ResponseEntity.ok(bookService.findById(bookId));
     }
 
@@ -85,6 +98,8 @@ public class BookController {
             })
     })
     public ResponseEntity<BookDto> createBook(@RequestBody BookRequest bookDto) {
+        logger.info("Creating a new book in the DB: {}", bookDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Creating a new book in the DB: " + bookDto);
         return new ResponseEntity<>(bookService.save(bookDto), HttpStatus.CREATED);
     }
 
@@ -98,6 +113,8 @@ public class BookController {
             })
     })
     public ResponseEntity<BookDto> updateBook(@PathVariable int bookId, @RequestBody BookRequest bookDto) {
+        logger.info("Updating an existing book in the DB: {}", bookDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Updating an existing book in the DB: " + bookDto);
         return ResponseEntity.ok(bookService.update(bookId, bookDto));
     }
 
@@ -108,6 +125,8 @@ public class BookController {
             @ApiResponse(responseCode = "204", description = "No Content")
     })
     public ResponseEntity<Void> deleteBook(@PathVariable int bookId) {
+        logger.info("Deleting a book from the DB by id: {}", bookId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Deleting a book from the DB by id: " + bookId);
         bookService.deleteById(bookId);
         return ResponseEntity.noContent().build();
     }
@@ -125,6 +144,8 @@ public class BookController {
             @PathVariable int authorId,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        logger.info("Getting all books by author id from the DB: {}", authorId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all books by author id from the DB: " + authorId);
         return ResponseEntity.ok(bookService.findAllByAuthorId(authorId, pageNo, pageSize));
     }
 
@@ -141,6 +162,8 @@ public class BookController {
             @PathVariable int genreId,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        logger.info("Getting all books by genre id from the DB: {}", genreId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all books by genre id from the DB: " + genreId);
         return ResponseEntity.ok(bookService.findAllByGenreId(genreId, pageNo, pageSize));
     }
 
@@ -157,7 +180,27 @@ public class BookController {
             @PathVariable int publisherId,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        logger.info("Getting all books by publisher id from the DB: {}", publisherId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all books by publisher id from the DB: " + publisherId);
         return ResponseEntity.ok(bookService.findAllByPublisherId(publisherId, pageNo, pageSize));
+    }
+
+    @GetMapping("/books/title/{title}")
+    @Operation(summary = "Finding all books by title fragment",
+            description = "Gets all books by title fragment from the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BookDto[].class))
+            })
+    })
+    public ResponseEntity<BooksResponse> getBooksByTitle(
+            @PathVariable String title,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        logger.info("Getting all books by title fragment from the DB: {}", title);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all books by title fragment from the DB: " + title);
+        return ResponseEntity.ok(bookService.findAllByTitle(title, pageNo, pageSize));
     }
 
     @GetMapping("/books/download")
@@ -170,6 +213,8 @@ public class BookController {
             })
     })
     public ResponseEntity<Resource> downloadBooks() throws IOException, SQLException {
+        logger.info("Downloading all books from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Downloading all books from the DB");
         Path path = serializer.writeDbTableToCsvFile("book");
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 

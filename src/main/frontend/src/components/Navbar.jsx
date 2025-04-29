@@ -1,20 +1,26 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { isAuthenticated, signOut } from '../services/authService'
+import { isAuthenticated, signOut, isAnalyst } from '../services/authService'
 import { useCart } from '../context/CartContext'
 
 const Navbar = () => {
   const [authenticated, setAuthenticated] = useState(false);
+  const [userIsAnalyst, setUserIsAnalyst] = useState(false);
   const navigate = useNavigate();
   const { cartItems } = useCart();
 
   useEffect(() => {
-    setAuthenticated(isAuthenticated());
+    const authStatus = isAuthenticated();
+    setAuthenticated(authStatus);
+    if (authStatus) {
+      setUserIsAnalyst(isAnalyst());
+    }
   }, []);
 
   const handleSignOut = () => {
     signOut();
     setAuthenticated(false);
+    setUserIsAnalyst(false);
     navigate('/');
   };
 
@@ -27,8 +33,12 @@ const Navbar = () => {
             <Link to="/books" className="hover:text-blue-200">Books</Link>
             <Link to="/authors" className="hover:text-blue-200">Authors</Link>
             <Link to="/publishers" className="hover:text-blue-200">Publishers</Link>
-            <Link to="/customers" className="hover:text-blue-200">Customers</Link>
-            <Link to="/orders" className="hover:text-blue-200">Orders</Link>
+            {userIsAnalyst && (
+              <>
+                <Link to="/customers" className="hover:text-blue-200">Customers</Link>
+                <Link to="/orders" className="hover:text-blue-200">Orders</Link>
+              </>
+            )}
             <Link to="/cart" className="hover:text-blue-200 relative">
               Cart
               {cartItems.length > 0 && (

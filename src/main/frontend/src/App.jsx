@@ -16,9 +16,9 @@ import Cart from './pages/Cart'
 import OrderHistory from './pages/OrderHistory'
 import Publishers from './pages/Publishers'
 // import PublisherDetails from './pages/PublisherDetails'
-// import Customers from './pages/Customers'
+import Customers from './pages/Customers'
 // import CustomerDetails from './pages/CustomerDetails'
-// import Orders from './pages/Orders'
+import Orders from './pages/Orders'
 // import OrderDetails from './pages/OrderDetails'
 import NotFound from './pages/NotFound'
 import { CartProvider } from './context/CartContext'
@@ -45,9 +45,9 @@ function App() {
             <Route path="/order-history" element={<OrderHistory />} />
             <Route path="/publishers" element={<Publishers />} />
             {/*<Route path="/publishers/:id" element={<PublisherDetails />} />*/}
-            {/*<Route path="/customers" element={<Customers />} />*/}
+            <Route path="/customers" element={<Customers />} />
             {/*<Route path="/customers/:id" element={<CustomerDetails />} />*/}
-            {/*<Route path="/orders" element={<Orders />} />*/}
+            <Route path="/orders" element={<Orders />} />
             {/*<Route path="/orders/:id" element={<OrderDetails />} />*/}
             <Route path="*" element={<NotFound />} />
           </Routes>

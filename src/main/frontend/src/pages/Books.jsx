@@ -6,7 +6,8 @@ import {
   downloadBooks, 
   getBooksByGenre, 
   getBooksByAuthor, 
-  getBooksByPublisher
+  getBooksByPublisher,
+  getBooksByTitle
 } from '../services/bookService';
 import { getAllGenres } from '../services/genreService';
 import { getAllAuthors } from '../services/authorService';
@@ -31,7 +32,9 @@ const Books = () => {
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedAuthor, setSelectedAuthor] = useState('');
   const [selectedPublisher, setSelectedPublisher] = useState('');
-  const [activeFilter, setActiveFilter] = useState(null); // 'genre', 'author', 'publisher', or null
+  const [inputTitle, setInputTitle] = useState('');
+  const [searchTitle, setSearchTitle] = useState('');
+  const [activeFilter, setActiveFilter] = useState(null); // 'genre', 'author', 'publisher', 'title', or null
 
   // Fetch filter options (genres, authors, publishers)
   useEffect(() => {
@@ -66,6 +69,8 @@ const Books = () => {
           data = await getBooksByAuthor(selectedAuthor, currentPage, pageSize);
         } else if (activeFilter === 'publisher' && selectedPublisher) {
           data = await getBooksByPublisher(selectedPublisher, currentPage, pageSize);
+        } else if (activeFilter === 'title' && searchTitle) {
+          data = await getBooksByTitle(searchTitle, currentPage, pageSize);
         } else {
           data = await getPaginatedBooks(currentPage, pageSize);
         }
@@ -82,7 +87,7 @@ const Books = () => {
     };
 
     fetchBooks();
-  }, [currentPage, pageSize, activeFilter, selectedGenre, selectedAuthor, selectedPublisher]);
+  }, [currentPage, pageSize, activeFilter, selectedGenre, selectedAuthor, selectedPublisher, searchTitle]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this book?')) {
@@ -134,10 +139,27 @@ const Books = () => {
     setActiveFilter(publisherId ? 'publisher' : null);
   };
 
+  const handleTitleSearch = (e) => {
+    const title = e.target.value;
+    setInputTitle(title);
+  };
+
+  const handleTitleSubmit = (e) => {
+    e.preventDefault();
+    setSearchTitle(inputTitle);
+    setSelectedGenre('');
+    setSelectedAuthor('');
+    setSelectedPublisher('');
+    setCurrentPage(0);
+    setActiveFilter(inputTitle ? 'title' : null);
+  };
+
   const clearFilters = () => {
     setSelectedGenre('');
     setSelectedAuthor('');
     setSelectedPublisher('');
+    setInputTitle('');
+    setSearchTitle('');
     setActiveFilter(null);
     setCurrentPage(0);
   };
@@ -167,6 +189,26 @@ const Books = () => {
       {/* Filter Controls */}
       <div className="mb-6 bg-gray-100 p-4 rounded-lg">
         <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0">
+          <div className="flex-1">
+            <label htmlFor="title-search" className="block text-sm font-medium text-gray-700 mb-1">Search by Title</label>
+            <form onSubmit={handleTitleSubmit} className="flex">
+              <input
+                type="text"
+                id="title-search"
+                value={inputTitle}
+                onChange={handleTitleSearch}
+                placeholder="Enter book title..."
+                className="w-full p-2 border border-gray-300 rounded-md rounded-r-none"
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md rounded-l-none hover:bg-blue-700"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+
           <div className="flex-1">
             <label htmlFor="genre-filter" className="block text-sm font-medium text-gray-700 mb-1">Filter by Genre</label>
             <select

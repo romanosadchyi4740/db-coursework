@@ -104,6 +104,12 @@ export const isAdmin = () => {
   return role === 'ROLE_ADMIN';
 };
 
+// Check if the user is analyst
+export const isAnalyst = () => {
+  const role = getUserRole();
+  return role === 'ROLE_ANALYST';
+};
+
 export default {
   signUp,
   signIn,
@@ -114,5 +120,6 @@ export default {
   getUserRole,
   getUsername,
   getUserId,
-  isAdmin
+  isAdmin,
+  isAnalyst
 };

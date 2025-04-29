@@ -54,6 +54,17 @@ export const getBooksByPublisher = async (publisherId, pageNo = 0, pageSize = 10
   }
 };
 
+// Get books by title search
+export const getBooksByTitle = async (title, pageNo = 0, pageSize = 10) => {
+  try {
+    const response = await api.get(`/${ENDPOINT}/title/${title}?pageNo=${pageNo}&pageSize=${pageSize}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching books by title:`, error);
+    throw error;
+  }
+};
+
 export default {
   getAllBooks,
   getBookById,
@@ -63,5 +74,6 @@ export default {
   getPaginatedBooks,
   getBooksByGenre,
   getBooksByAuthor,
-  getBooksByPublisher
+  getBooksByPublisher,
+  getBooksByTitle
 };

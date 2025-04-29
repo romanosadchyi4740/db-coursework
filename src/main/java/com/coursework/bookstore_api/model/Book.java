@@ -15,7 +15,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "book")
+@Table(name = "book", indexes = {
+        @Index(name = "book_publisher_index", columnList = "publisher_id")
+})
 @Schema(name = "Book", description = "The book DB-entity")
 public class Book {
     @Id
@@ -26,16 +28,6 @@ public class Book {
     @Column(name = "title")
     private String title;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
-    inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id"))
-    private List<Author> authors = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "genre_id"))
-    private List<Genre> genres = new ArrayList<>();
-
     @Column(name = "price")
     private double price;
 
@@ -44,6 +36,18 @@ public class Book {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "author_id"))
+    private List<Author> authors = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "genre_id"))
+    private List<Genre> genres = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publisher_id")
