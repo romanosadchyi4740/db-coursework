@@ -37,7 +37,7 @@ const Orders = () => {
   // Format date to a more readable format
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
   // Format price to display with currency symbol

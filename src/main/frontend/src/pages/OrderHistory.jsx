@@ -109,15 +109,17 @@ const OrderHistory = () => {
           ))}
         </div>
       )}
-      
-      <div className="mt-6">
-        <button
-          onClick={() => navigate('/books')}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Continue Shopping
-        </button>
-      </div>
+
+      {orders.length > 0 && (
+        <div className="mt-6">
+          <button
+            onClick={() => navigate('/books')}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      )}
     </div>
   );
 };

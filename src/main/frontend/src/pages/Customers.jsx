@@ -62,14 +62,8 @@ const Customers = () => {
             <li key={customer.id} className="p-4 hover:bg-gray-50">
               <div className="flex flex-col md:flex-row md:justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold">{customer.firstName} {customer.lastName}</h2>
-                  <p className="text-gray-600">{customer.email}</p>
-                  <p className="text-gray-500">Phone: {customer.phone || 'N/A'}</p>
-                </div>
-                <div className="mt-2 md:mt-0">
-                  <p className="text-gray-500">Address: {customer.address || 'N/A'}</p>
-                  <p className="text-gray-500">City: {customer.city || 'N/A'}</p>
-                  <p className="text-gray-500">Country: {customer.country || 'N/A'}</p>
+                  <h2 className="text-xl font-semibold text-gray-700">{customer.username}</h2>
+                  <p className="text-gray-500">Email: {customer.email || 'N/A'}</p>
                 </div>
               </div>
             </li>
