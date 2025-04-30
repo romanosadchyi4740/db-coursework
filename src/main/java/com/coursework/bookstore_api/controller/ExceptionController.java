@@ -67,4 +67,10 @@ public class ExceptionController {
         log.error(e.getMessage());
         return ResponseEntity.status(404).body(e.getMessage());
     }
+
+    @ExceptionHandler(OutOfStockException.class)
+    public ResponseEntity<String> outOfStockException(OutOfStockException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(400).body(e.getMessage());
+    }
 }

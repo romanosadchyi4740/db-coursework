@@ -51,7 +51,13 @@ const Cart = () => {
       alert('Order placed successfully!');
     } catch (error) {
       console.error('Checkout error:', error);
-      setCheckoutError('Failed to place order. Please try again.');
+      setCheckoutError('Failed to place order. Please try again. Error: ' + error.response?.data);
+      setTimeout(() => {
+        setCheckoutError(null);
+      }, 5000);
+      throw new Error(
+        'Failed to place order. Please try again.' + error.message
+      )
     } finally {
       setIsCheckingOut(false);
     }

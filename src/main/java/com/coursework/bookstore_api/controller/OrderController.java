@@ -2,7 +2,6 @@ package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.OrderDto;
 import com.coursework.bookstore_api.service.OrderService;
-import com.coursework.bookstore_api.util.DatabaseTableSerializer;
 import com.coursework.bookstore_api.util.OrdersSerializer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -117,7 +115,7 @@ public class OrderController {
                     @Schema(implementation = OrderDto[].class))
             })
     })
-    public ResponseEntity<Resource> downloadOrders() throws IOException, SQLException {
+    public ResponseEntity<Resource> downloadOrders() throws IOException {
         Path path = OrdersSerializer.downloadJsonFile(orderService.findAll());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 

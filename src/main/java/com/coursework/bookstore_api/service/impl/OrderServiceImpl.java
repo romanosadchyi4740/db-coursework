@@ -5,6 +5,7 @@ import com.coursework.bookstore_api.dto.OrderItemDto;
 import com.coursework.bookstore_api.exceptions.BookNotFoundException;
 import com.coursework.bookstore_api.exceptions.CustomerNotFoundException;
 import com.coursework.bookstore_api.exceptions.OrderNotFoundException;
+import com.coursework.bookstore_api.exceptions.OutOfStockException;
 import com.coursework.bookstore_api.model.Book;
 import com.coursework.bookstore_api.model.Customer;
 import com.coursework.bookstore_api.model.Order;
@@ -14,6 +15,7 @@ import com.coursework.bookstore_api.repository.CustomerRepository;
 import com.coursework.bookstore_api.repository.OrderRepository;
 import com.coursework.bookstore_api.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
             Book book = bookRepository.findById(itemDto.getBookId())
                     .orElseThrow(() -> new BookNotFoundException("Book not found with ID: " + itemDto.getBookId()));
 
-            // Create order item
+            // Create an order item
             OrderItem orderItem = new OrderItem();
             orderItem.setBook(book);
             orderItem.setOrder(order);
@@ -76,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
 
             orderItems.add(orderItem);
 
-            // Add to total amount
+            // Add to the total amount
             totalAmount += book.getPrice() * itemDto.getQuantity();
         }
 
@@ -85,7 +87,13 @@ public class OrderServiceImpl implements OrderService {
         order.setAmount(totalAmount);
 
         // Save updated order
-        order = orderRepository.save(order);
+        try {
+            order = orderRepository.save(order);
+        } catch (JpaSystemException e) {
+            System.out.println("Error saving order: " + e.getMessage());
+            System.out.println(e.getClass().getSimpleName());
+            throw new OutOfStockException("Not enough books in stock");
+        }
 
         return OrderDto.from(order);
     }
