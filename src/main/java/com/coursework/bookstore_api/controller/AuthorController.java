@@ -2,7 +2,9 @@ package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.AuthorDto;
 import com.coursework.bookstore_api.dto.response.AuthorsResponse;
+import com.coursework.bookstore_api.model.LogLevel;
 import com.coursework.bookstore_api.service.AuthorService;
+import com.coursework.bookstore_api.service.DatabaseLoggerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +25,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "AuthorController", description = "Provides all operations with authors")
 public class AuthorController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthorController.class);
+
     private final AuthorService authorService;
+    private final DatabaseLoggerService databaseLoggerService;
 
     @GetMapping("/authors/all")
     @Operation(summary = "Finding all the authors from the DB",
@@ -33,6 +40,8 @@ public class AuthorController {
             })
     })
     public ResponseEntity<List<AuthorDto>> getAuthors() {
+        logger.info("Getting all authors from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all authors from the DB");
         return ResponseEntity.ok(authorService.findAll());
     }
 
@@ -49,6 +58,8 @@ public class AuthorController {
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
     ) {
+        logger.info("Getting a batch of authors from the DB with pageNo: {} and pageSize: {}", pageNo, pageSize);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting a batch of authors from the DB with pageNo: " + pageNo + " and pageSize: " + pageSize);
         return ResponseEntity.ok(authorService.findAll(pageNo, pageSize));
     }
 
@@ -62,6 +73,8 @@ public class AuthorController {
             })
     })
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable int authorId) {
+        logger.info("Getting an author from the DB by id: {}", authorId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting an author from the DB by id: " + authorId);
         return ResponseEntity.ok(authorService.findById(authorId));
     }
 
@@ -75,6 +88,8 @@ public class AuthorController {
             })
     })
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
+        logger.info("Creating a new author in the DB: {}", authorDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Creating a new author in the DB: " + authorDto);
         return new ResponseEntity<>(authorService.save(authorDto), HttpStatus.CREATED);
     }
 
@@ -88,6 +103,8 @@ public class AuthorController {
             })
     })
     public ResponseEntity<AuthorDto> updateAuthor(@PathVariable int authorId, @RequestBody AuthorDto authorDto) {
+        logger.info("Updating an existing author in the DB with id: {}, data: {}", authorId, authorDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Updating an existing author in the DB with id: " + authorId + ", data: " + authorDto);
         return ResponseEntity.ok(authorService.update(authorId, authorDto));
     }
 
@@ -98,6 +115,8 @@ public class AuthorController {
             @ApiResponse(responseCode = "204", description = "No Content")
     })
     public ResponseEntity<Void> deleteAuthor(@PathVariable int authorId) {
+        logger.info("Deleting an author from the DB by id: {}", authorId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Deleting an author from the DB by id: " + authorId);
         authorService.deleteById(authorId);
         return ResponseEntity.noContent().build();
     }

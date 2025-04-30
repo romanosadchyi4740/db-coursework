@@ -1,6 +1,8 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.PublisherDto;
+import com.coursework.bookstore_api.model.LogLevel;
+import com.coursework.bookstore_api.service.DatabaseLoggerService;
 import com.coursework.bookstore_api.service.PublisherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "PublisherController", description = "Provides all operations with publishers")
 public class PublisherController {
+    private static final Logger logger = LoggerFactory.getLogger(PublisherController.class);
+
     private final PublisherService publisherService;
+    private final DatabaseLoggerService databaseLoggerService;
 
     @GetMapping("/publishers")
     @Operation(summary = "Finding all the publishers from the DB",
@@ -32,6 +39,8 @@ public class PublisherController {
             })
     })
     public ResponseEntity<List<PublisherDto>> getPublishers() {
+        logger.info("Getting all publishers from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all publishers from the DB");
         return ResponseEntity.ok(publisherService.findAll());
     }
 
@@ -45,6 +54,8 @@ public class PublisherController {
             })
     })
     public ResponseEntity<PublisherDto> getPublisher(@PathVariable int publisherId) {
+        logger.info("Getting a publisher from the DB by id: {}", publisherId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting a publisher from the DB by id: " + publisherId);
         return ResponseEntity.ok(publisherService.findById(publisherId));
     }
 
@@ -58,6 +69,8 @@ public class PublisherController {
             })
     })
     public ResponseEntity<PublisherDto> createPublisher(@RequestBody PublisherDto publisherDto) {
+        logger.info("Creating a new publisher in the DB: {}", publisherDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Creating a new publisher in the DB: " + publisherDto);
         return new ResponseEntity<>(publisherService.save(publisherDto), HttpStatus.CREATED);
     }
 
@@ -71,6 +84,8 @@ public class PublisherController {
             })
     })
     public ResponseEntity<PublisherDto> updatePublisher(@PathVariable int publisherId, @RequestBody PublisherDto publisherDto) {
+        logger.info("Updating an existing publisher in the DB with id: {}, data: {}", publisherId, publisherDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Updating an existing publisher in the DB with id: " + publisherId + ", data: " + publisherDto);
         return ResponseEntity.ok(publisherService.update(publisherId, publisherDto));
     }
 
@@ -81,6 +96,8 @@ public class PublisherController {
             @ApiResponse(responseCode = "204", description = "No Content")
     })
     public ResponseEntity<Void> deletePublisher(@PathVariable int publisherId) {
+        logger.info("Deleting a publisher from the DB by id: {}", publisherId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Deleting a publisher from the DB by id: " + publisherId);
         publisherService.deleteById(publisherId);
         return ResponseEntity.noContent().build();
     }

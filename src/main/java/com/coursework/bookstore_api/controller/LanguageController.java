@@ -1,6 +1,8 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.LanguageDto;
+import com.coursework.bookstore_api.model.LogLevel;
+import com.coursework.bookstore_api.service.DatabaseLoggerService;
 import com.coursework.bookstore_api.service.LanguageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "LanguageController", description = "Provides all operations with languages")
 public class LanguageController {
+    private static final Logger logger = LoggerFactory.getLogger(LanguageController.class);
+
     private final LanguageService languageService;
+    private final DatabaseLoggerService databaseLoggerService;
 
     @GetMapping("/languages")
     @Operation(summary = "Finding all the languages from the DB",
@@ -32,6 +39,8 @@ public class LanguageController {
             })
     })
     public ResponseEntity<List<LanguageDto>> getLanguages() {
+        logger.info("Getting all languages from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all languages from the DB");
         return ResponseEntity.ok(languageService.findAll());
     }
 
@@ -45,6 +54,8 @@ public class LanguageController {
             })
     })
     public ResponseEntity<LanguageDto> getLanguage(@PathVariable int languageId) {
+        logger.info("Getting a language from the DB by id: {}", languageId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting a language from the DB by id: " + languageId);
         return ResponseEntity.ok(languageService.findById(languageId));
     }
 
@@ -58,6 +69,8 @@ public class LanguageController {
             })
     })
     public ResponseEntity<LanguageDto> createLanguage(@RequestBody LanguageDto languageDto) {
+        logger.info("Creating a new language in the DB: {}", languageDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Creating a new language in the DB: " + languageDto);
         return new ResponseEntity<>(languageService.save(languageDto), HttpStatus.CREATED);
     }
 
@@ -71,6 +84,8 @@ public class LanguageController {
             })
     })
     public ResponseEntity<LanguageDto> updateLanguage(@PathVariable int languageId, @RequestBody LanguageDto languageDto) {
+        logger.info("Updating an existing language in the DB with id: {}, data: {}", languageId, languageDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Updating an existing language in the DB with id: " + languageId + ", data: " + languageDto);
         return ResponseEntity.ok(languageService.update(languageId, languageDto));
     }
 
@@ -81,6 +96,8 @@ public class LanguageController {
             @ApiResponse(responseCode = "204", description = "No Content")
     })
     public ResponseEntity<Void> deleteLanguage(@PathVariable int languageId) {
+        logger.info("Deleting a language from the DB by id: {}", languageId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Deleting a language from the DB by id: " + languageId);
         languageService.deleteById(languageId);
         return ResponseEntity.noContent().build();
     }

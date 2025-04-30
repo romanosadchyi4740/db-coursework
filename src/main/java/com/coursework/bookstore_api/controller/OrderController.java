@@ -1,6 +1,8 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.OrderDto;
+import com.coursework.bookstore_api.model.LogLevel;
+import com.coursework.bookstore_api.service.DatabaseLoggerService;
 import com.coursework.bookstore_api.service.OrderService;
 import com.coursework.bookstore_api.util.OrdersSerializer;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +32,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "OrderController", description = "Provides all operations with orders")
 public class OrderController {
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
+
     private final OrderService orderService;
+    private final DatabaseLoggerService databaseLoggerService;
 
     @GetMapping("/orders")
     @Operation(summary = "Finding all the orders from the DB",
@@ -40,6 +47,8 @@ public class OrderController {
             })
     })
     public ResponseEntity<List<OrderDto>> getOrders() {
+        logger.info("Getting all orders from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all orders from the DB");
         return ResponseEntity.ok(orderService.findAll());
     }
 
@@ -53,6 +62,8 @@ public class OrderController {
             })
     })
     public ResponseEntity<List<OrderDto>> getOrdersByCustomerId(@RequestParam int customerId) {
+        logger.info("Getting all orders for customer with id: {}", customerId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all orders for customer with id: " + customerId);
         return ResponseEntity.ok(orderService.findAllByCustomerId(customerId));
     }
 
@@ -66,6 +77,8 @@ public class OrderController {
             })
     })
     public ResponseEntity<OrderDto> getOrder(@PathVariable int orderId) {
+        logger.info("Getting an order from the DB by id: {}", orderId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting an order from the DB by id: " + orderId);
         return ResponseEntity.ok(orderService.findById(orderId));
     }
 
@@ -79,6 +92,8 @@ public class OrderController {
             })
     })
     public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
+        logger.info("Creating a new order in the DB: {}", orderDto);
+//        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Creating a new order in the DB: " + orderDto);
         return new ResponseEntity<>(orderService.save(orderDto), HttpStatus.CREATED);
     }
 
@@ -92,6 +107,8 @@ public class OrderController {
             })
     })
     public ResponseEntity<OrderDto> updateOrder(@PathVariable int orderId, @RequestBody OrderDto orderDto) {
+        logger.info("Updating an existing order in the DB with id: {}, data: {}", orderId, orderDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Updating an existing order in the DB with id: " + orderId + ", data: " + orderDto);
         return ResponseEntity.ok(orderService.update(orderId, orderDto));
     }
 
@@ -102,6 +119,8 @@ public class OrderController {
             @ApiResponse(responseCode = "204", description = "No Content")
     })
     public ResponseEntity<Void> deleteOrder(@PathVariable int orderId) {
+        logger.info("Deleting an order from the DB by id: {}", orderId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Deleting an order from the DB by id: " + orderId);
         orderService.deleteById(orderId);
         return ResponseEntity.noContent().build();
     }
@@ -116,6 +135,8 @@ public class OrderController {
             })
     })
     public ResponseEntity<Resource> downloadOrders() throws IOException {
+        logger.info("Downloading all orders from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Downloading all orders from the DB");
         Path path = OrdersSerializer.downloadJsonFile(orderService.findAll());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 

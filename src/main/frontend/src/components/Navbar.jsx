@@ -9,18 +9,34 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { cartItems } = useCart();
 
-  useEffect(() => {
+  // Function to update authentication state
+  const updateAuthState = () => {
     const authStatus = isAuthenticated();
     setAuthenticated(authStatus);
     if (authStatus) {
       setUserIsAnalyst(isAnalyst());
+    } else {
+      setUserIsAnalyst(false);
     }
+  };
+
+  // Initial check on component mount
+  useEffect(() => {
+    updateAuthState();
+
+    // Listen for auth-change events
+    window.addEventListener('auth-change', updateAuthState);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener('auth-change', updateAuthState);
+    };
   }, []);
 
   const handleSignOut = () => {
     signOut();
-    setAuthenticated(false);
-    setUserIsAnalyst(false);
+    // No need to manually set state here as the auth-change event will trigger updateAuthState
+    window.dispatchEvent(new Event('auth-change'));
     navigate('/');
   };
 

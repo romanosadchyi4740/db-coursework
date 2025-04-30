@@ -15,6 +15,8 @@ export const signUp = async (userData) => {
     const response = await api.post('/sign-up', userData);
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+      // Dispatch a custom event to notify components about authentication change
+      window.dispatchEvent(new Event('auth-change'));
       return response.data;
     }
   } catch (error) {
@@ -29,6 +31,8 @@ export const signIn = async (credentials) => {
     const response = await api.post('/sign-in', credentials);
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+      // Dispatch a custom event to notify components about authentication change
+      window.dispatchEvent(new Event('auth-change'));
       return response.data;
     }
   } catch (error) {

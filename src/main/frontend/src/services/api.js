@@ -24,6 +24,25 @@ api.interceptors.request.use(
   }
 );
 
+// Add a response interceptor to handle 403 errors
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 403) {
+      console.error('Access forbidden. Redirecting to login page.');
+      // Clear token if it exists
+      localStorage.removeItem('token');
+      // Dispatch auth-change event to update navbar
+      window.dispatchEvent(new Event('auth-change'));
+      // Redirect to login page
+      window.location.href = '/sign-in';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const fetchAll = async (endpoint) => {
   try {
     const response = await api.get(`/${endpoint}`);

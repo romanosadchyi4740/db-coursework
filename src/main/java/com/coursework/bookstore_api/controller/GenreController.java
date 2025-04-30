@@ -1,6 +1,8 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.GenreDto;
+import com.coursework.bookstore_api.model.LogLevel;
+import com.coursework.bookstore_api.service.DatabaseLoggerService;
 import com.coursework.bookstore_api.service.GenreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "GenreController", description = "Provides all operations with genres")
 public class GenreController {
+    private static final Logger logger = LoggerFactory.getLogger(GenreController.class);
+
     private final GenreService genreService;
+    private final DatabaseLoggerService databaseLoggerService;
 
     @GetMapping("/genres")
     @Operation(summary = "Finding all the genres from the DB",
@@ -32,6 +39,8 @@ public class GenreController {
             })
     })
     public ResponseEntity<List<GenreDto>> getGenres() {
+        logger.info("Getting all genres from the DB");
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all genres from the DB");
         return ResponseEntity.ok(genreService.findAll());
     }
 
@@ -45,6 +54,8 @@ public class GenreController {
             })
     })
     public ResponseEntity<GenreDto> getGenre(@PathVariable int genreId) {
+        logger.info("Getting a genre from the DB by id: {}", genreId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting a genre from the DB by id: " + genreId);
         return ResponseEntity.ok(genreService.findById(genreId));
     }
 
@@ -58,6 +69,8 @@ public class GenreController {
             })
     })
     public ResponseEntity<GenreDto> createGenre(@RequestBody GenreDto genreDto) {
+        logger.info("Creating a new genre in the DB: {}", genreDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Creating a new genre in the DB: " + genreDto);
         return new ResponseEntity<>(genreService.save(genreDto), HttpStatus.CREATED);
     }
 
@@ -71,6 +84,8 @@ public class GenreController {
             })
     })
     public ResponseEntity<GenreDto> updateGenre(@PathVariable int genreId, @RequestBody GenreDto genreDto) {
+        logger.info("Updating an existing genre in the DB with id: {}, data: {}", genreId, genreDto);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Updating an existing genre in the DB with id: " + genreId + ", data: " + genreDto);
         return ResponseEntity.ok(genreService.update(genreId, genreDto));
     }
 
@@ -81,6 +96,8 @@ public class GenreController {
             @ApiResponse(responseCode = "204", description = "No Content")
     })
     public ResponseEntity<Void> deleteGenre(@PathVariable int genreId) {
+        logger.info("Deleting a genre from the DB by id: {}", genreId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Deleting a genre from the DB by id: " + genreId);
         genreService.deleteById(genreId);
         return ResponseEntity.noContent().build();
     }
