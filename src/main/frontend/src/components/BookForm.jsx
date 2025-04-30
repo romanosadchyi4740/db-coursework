@@ -14,9 +14,10 @@ const BookForm = ({ initialData, onSubmit, buttonText = 'Submit' }) => {
     price: 0,
     numberInStock: 0,
     languageId: '',
-    genreIds: []
+    genreIds: [],
+    imageUrl: ''
   });
-  
+
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
   const [languages, setLanguages] = useState([]);
@@ -34,7 +35,7 @@ const BookForm = ({ initialData, onSubmit, buttonText = 'Submit' }) => {
           getAllLanguages(),
           getAllGenres()
         ]);
-        
+
         setAuthors(authorsData);
         setPublishers(publishersData);
         setLanguages(languagesData);
@@ -63,7 +64,7 @@ const BookForm = ({ initialData, onSubmit, buttonText = 'Submit' }) => {
     const selectedValues = Array.from(options)
       .filter(option => option.selected)
       .map(option => option.value);
-    
+
     setFormData({
       ...formData,
       [name]: selectedValues
@@ -167,6 +168,21 @@ const BookForm = ({ initialData, onSubmit, buttonText = 'Submit' }) => {
           min="0"
           required
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+          Image URL
+        </label>
+        <input
+          type="text"
+          id="imageUrl"
+          name="imageUrl"
+          value={formData.imageUrl}
+          onChange={handleChange}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          placeholder="https://example.com/image.jpg"
         />
       </div>
 

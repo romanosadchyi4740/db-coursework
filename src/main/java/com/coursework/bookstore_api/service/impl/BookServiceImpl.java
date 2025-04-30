@@ -53,6 +53,7 @@ public class BookServiceImpl implements BookService {
                 .title(bookDto.getTitle())
                 .price(bookDto.getPrice())
                 .numberInStock(bookDto.getNumberInStock())
+                .imageUrl(bookDto.getImageUrl())
                 .language(languageRepository.findById(bookDto.getLanguageId())
                         .orElseThrow(() -> new LanguageNotFoundException("Language not found")))
                 .authors(authorRepository.findAllById(bookDto.getAuthorIds()))
@@ -74,13 +75,13 @@ public class BookServiceImpl implements BookService {
         existingBook.setTitle(bookDto.getTitle());
         existingBook.setPrice(bookDto.getPrice());
         existingBook.setNumberInStock(bookDto.getNumberInStock());
+        existingBook.setImageUrl(bookDto.getImageUrl());
         existingBook.setLanguage(languageRepository.findById(bookDto.getLanguageId())
                         .orElseThrow(() -> new LanguageNotFoundException("Language not found")));
         existingBook.setAuthors(authorRepository.findAllById(bookDto.getAuthorIds()));
         existingBook.setGenres(genreRepository.findAllById(bookDto.getGenreIds()));
         existingBook.setPublisher(publisherRepository.findById(Integer.parseInt(bookDto.getPublisherId()))
                         .orElseThrow(() -> new RuntimeException("Publisher not found")));
-        existingBook.setTitle(bookDto.getTitle());
 
         return BookDto.from(bookRepository.save(existingBook));
     }

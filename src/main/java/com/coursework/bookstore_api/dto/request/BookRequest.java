@@ -19,4 +19,5 @@ public class BookRequest {
     private String publisherId;
     private double price;
     private int numberInStock;
+    private String imageUrl;
 }
