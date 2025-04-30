@@ -23,7 +23,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> exception(Exception e) {
         log.error("General exception caught: {}", e.getMessage());
-        databaseLoggerService.saveLog(LogLevel.ERROR, log.getName(), "General exception caught: " + e.getMessage());
+//        databaseLoggerService.saveLog(LogLevel.ERROR, log.getName(), "General exception caught: " + e.getMessage());
         return ResponseEntity.status(500).body(e.getMessage());
     }
 

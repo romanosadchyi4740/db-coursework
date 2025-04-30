@@ -50,7 +50,7 @@ const Orders = () => {
     // Group orders by date (month and year)
     const groupedByDate = orders.reduce((acc, order) => {
       const date = new Date(order.paymentDate);
-      const monthYear = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
+      const monthYear = `${date.toLocaleString('en-US', { month: 'short' })} ${date.getFullYear()}`;
 
       if (!acc[monthYear]) {
         acc[monthYear] = {
@@ -68,17 +68,16 @@ const Orders = () => {
 
     // Convert to array format for Recharts
     return Object.values(groupedByDate).sort((a, b) => {
-      // Sort by date (assuming format is "MMM YYYY")
       const [aMonth, aYear] = a.name.split(' ');
       const [bMonth, bYear] = b.name.split(' ');
 
-      if (aYear !== bYear) {
-        return aYear - bYear;
-      }
+      const yearDiff = parseInt(aYear) - parseInt(bYear);
+      if (yearDiff !== 0) return yearDiff;
 
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       return months.indexOf(aMonth) - months.indexOf(bMonth);
     });
+
   };
 
   if (loading) {
@@ -202,7 +201,7 @@ const Orders = () => {
                 <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
                 <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                 <Tooltip formatter={(value, name) => {
-                  if (name === 'totalAmount') {
+                  if (name === 'Total Amount') {
                     return [formatPrice(value), 'Total Amount'];
                   }
                   return [value, 'Number of Orders'];
