@@ -1,4 +1,4 @@
-import { fetchAll, fetchById, create, update, remove } from './api';
+import { fetchAll, fetchById, create, update, remove, downloadFile } from './api';
 import api from './api';
 
 const ENDPOINT = 'orders';
@@ -8,6 +8,7 @@ export const getOrderById = (id) => fetchById(ENDPOINT, id);
 export const createOrder = (order) => create(ENDPOINT, order);
 export const updateOrder = (id, order) => update(ENDPOINT, id, order);
 export const deleteOrder = (id) => remove(ENDPOINT, id);
+export const downloadOrders = () => downloadFile(`${ENDPOINT}/download`, 'orders.json');
 
 // Get order history for a specific customer
 export const getOrderHistory = async (customerId) => {
@@ -26,5 +27,6 @@ export default {
   createOrder,
   updateOrder,
   deleteOrder,
-  getOrderHistory
+  getOrderHistory,
+  downloadOrders
 };

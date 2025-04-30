@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllOrders } from '../services/orderService';
+import { getAllOrders, downloadOrders } from '../services/orderService';
 import { isAnalyst } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 // Import Recharts components
@@ -105,9 +105,16 @@ const Orders = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-600">Orders</h1>
 
-        {/* View toggle buttons */}
+        {/* View toggle buttons and download button */}
         {orders.length > 0 && (
           <div className="flex space-x-2">
+            {/* Download button */}
+            <button
+              onClick={() => downloadOrders()}
+              className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 mr-2"
+            >
+              Download Orders
+            </button>
             <button
               onClick={() => setViewMode('table')}
               className={`px-4 py-2 rounded-lg ${

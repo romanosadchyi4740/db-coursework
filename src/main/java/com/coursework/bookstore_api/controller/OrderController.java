@@ -3,6 +3,7 @@ package com.coursework.bookstore_api.controller;
 import com.coursework.bookstore_api.dto.OrderDto;
 import com.coursework.bookstore_api.service.OrderService;
 import com.coursework.bookstore_api.util.DatabaseTableSerializer;
+import com.coursework.bookstore_api.util.OrdersSerializer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +31,6 @@ import java.util.List;
 @Tag(name = "OrderController", description = "Provides all operations with orders")
 public class OrderController {
     private final OrderService orderService;
-    private final DatabaseTableSerializer serializer;
 
     @GetMapping("/orders")
     @Operation(summary = "Finding all the orders from the DB",
@@ -118,7 +118,7 @@ public class OrderController {
             })
     })
     public ResponseEntity<Resource> downloadOrders() throws IOException, SQLException {
-        Path path = serializer.writeDbTableToCsvFile("payment");
+        Path path = OrdersSerializer.downloadJsonFile(orderService.findAll());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
         HttpHeaders header = new HttpHeaders();

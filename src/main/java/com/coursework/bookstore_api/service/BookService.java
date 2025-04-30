@@ -26,4 +26,6 @@ public interface BookService {
     BooksResponse findAllByGenreId(int genreId, int pageNo, int pageSize);
 
     BooksResponse findAllByTitle(String title, int pageNo, int pageSize);
+
+//    BooksResponse getFilteredBooks(String title, Integer publisherId, Integer authorId, Integer genreId, int pageNo, int pageSize);
 }

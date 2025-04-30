@@ -203,6 +203,17 @@ public class BookController {
         return ResponseEntity.ok(bookService.findAllByTitle(title, pageNo, pageSize));
     }
 
+//    public ResponseEntity<BooksResponse> getFilteredBooks(
+//            @RequestParam(value = "title", required = false) String title,
+//            @RequestParam(value = "publisherId", required = false) Integer publisherId,
+//            @RequestParam(value = "authorId", required = false) Integer authorId,
+//            @RequestParam(value = "genreId", required = false) Integer genreId,
+//            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+//            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+//    ) {
+//        bookService.getFilteredBooks(title, publisherId, authorId, genreId, pageNo, pageSize);
+//    }
+
     @GetMapping("/books/download")
     @Operation(summary = "Downloading all books",
             description = "Downloads all books from the DB")

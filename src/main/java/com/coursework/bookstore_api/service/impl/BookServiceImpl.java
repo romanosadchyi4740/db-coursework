@@ -125,4 +125,16 @@ public class BookServiceImpl implements BookService {
         Page<Book> booksPage = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
         return PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
     }
+
+//    @Override
+//    public BooksResponse getFilteredBooks(String title, Integer publisherId, Integer authorId, Integer genreId,
+//                                          int pageNo, int pageSize) {
+//        Pageable pageable = PageRequest.of(pageNo, pageSize);
+//        Page<Book> booksPage = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
+//        List<Book> books = booksPage.getContent().stream()
+//                .filter(book -> book.getGenres().stream().filter()).toList();
+//        BooksResponse response = PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
+//        response.setContent(response.getContent().stream().filter(book -> book.get));
+//        return null;
+//    }
 }
