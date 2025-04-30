@@ -7,7 +7,8 @@ import {
   getBooksByGenre, 
   getBooksByAuthor, 
   getBooksByPublisher,
-  getBooksByTitle
+  getBooksByTitle,
+  getFilteredBooks
 } from '../services/bookService';
 import { getAllGenres } from '../services/genreService';
 import { getAllAuthors } from '../services/authorService';
@@ -34,7 +35,7 @@ const Books = () => {
   const [selectedPublisher, setSelectedPublisher] = useState('');
   const [inputTitle, setInputTitle] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
-  const [activeFilter, setActiveFilter] = useState(null); // 'genre', 'author', 'publisher', 'title', or null
+  // No longer need activeFilter state since we're using multiple filters
 
   // Fetch filter options (genres, authors, publishers)
   useEffect(() => {
@@ -56,22 +57,27 @@ const Books = () => {
     fetchFilterOptions();
   }, []);
 
-  // Fetch books based on active filter
+  // Fetch books based on active filters
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
         let data;
 
-        if (activeFilter === 'genre' && selectedGenre) {
-          data = await getBooksByGenre(selectedGenre, currentPage, pageSize);
-        } else if (activeFilter === 'author' && selectedAuthor) {
-          data = await getBooksByAuthor(selectedAuthor, currentPage, pageSize);
-        } else if (activeFilter === 'publisher' && selectedPublisher) {
-          data = await getBooksByPublisher(selectedPublisher, currentPage, pageSize);
-        } else if (activeFilter === 'title' && searchTitle) {
-          data = await getBooksByTitle(searchTitle, currentPage, pageSize);
+        // Check if any filters are active
+        const hasActiveFilters = selectedGenre || selectedAuthor || selectedPublisher || searchTitle;
+
+        if (hasActiveFilters) {
+          // Use the new multi-filter endpoint
+          const filters = {
+            genreId: selectedGenre || null,
+            authorId: selectedAuthor || null,
+            publisherId: selectedPublisher || null,
+            title: searchTitle || null
+          };
+          data = await getFilteredBooks(filters, currentPage, pageSize);
         } else {
+          // No filters, get all books
           data = await getPaginatedBooks(currentPage, pageSize);
         }
 
@@ -87,7 +93,7 @@ const Books = () => {
     };
 
     fetchBooks();
-  }, [currentPage, pageSize, activeFilter, selectedGenre, selectedAuthor, selectedPublisher, searchTitle]);
+  }, [currentPage, pageSize, selectedGenre, selectedAuthor, selectedPublisher, searchTitle]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this book?')) {
@@ -115,28 +121,19 @@ const Books = () => {
   const handleGenreChange = (e) => {
     const genreId = e.target.value;
     setSelectedGenre(genreId);
-    setSelectedAuthor('');
-    setSelectedPublisher('');
     setCurrentPage(0);
-    setActiveFilter(genreId ? 'genre' : null);
   };
 
   const handleAuthorChange = (e) => {
     const authorId = e.target.value;
     setSelectedAuthor(authorId);
-    setSelectedGenre('');
-    setSelectedPublisher('');
     setCurrentPage(0);
-    setActiveFilter(authorId ? 'author' : null);
   };
 
   const handlePublisherChange = (e) => {
     const publisherId = e.target.value;
     setSelectedPublisher(publisherId);
-    setSelectedGenre('');
-    setSelectedAuthor('');
     setCurrentPage(0);
-    setActiveFilter(publisherId ? 'publisher' : null);
   };
 
   const handleTitleSearch = (e) => {
@@ -147,11 +144,7 @@ const Books = () => {
   const handleTitleSubmit = (e) => {
     e.preventDefault();
     setSearchTitle(inputTitle);
-    setSelectedGenre('');
-    setSelectedAuthor('');
-    setSelectedPublisher('');
     setCurrentPage(0);
-    setActiveFilter(inputTitle ? 'title' : null);
   };
 
   const clearFilters = () => {
@@ -160,7 +153,6 @@ const Books = () => {
     setSelectedPublisher('');
     setInputTitle('');
     setSearchTitle('');
-    setActiveFilter(null);
     setCurrentPage(0);
   };
 
@@ -280,7 +272,7 @@ const Books = () => {
             </select>
           </div>
 
-          {activeFilter && (
+          {(selectedGenre || selectedAuthor || selectedPublisher || searchTitle) && (
             <div className="flex items-end">
               <button 
                 onClick={clearFilters}
@@ -289,12 +281,46 @@ const Books = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
-                Clear
+                Clear Filters
               </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Active Filters Display */}
+      {(selectedGenre || selectedAuthor || selectedPublisher || searchTitle) && (
+        <div className="mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100">
+          <h3 className="text-lg font-semibold mb-2 text-gray-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+            </svg>
+            Active Filters
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {searchTitle && (
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                Title: {searchTitle}
+              </span>
+            )}
+            {selectedGenre && (
+              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                Genre: {genres.find(g => g.id == selectedGenre)?.genreName || selectedGenre}
+              </span>
+            )}
+            {selectedAuthor && (
+              <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                Author: {authors.find(a => a.id == selectedAuthor)?.name || selectedAuthor}
+              </span>
+            )}
+            {selectedPublisher && (
+              <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                Publisher: {publishers.find(p => p.id == selectedPublisher)?.publisherName || selectedPublisher}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       {books.length === 0 ? (
         <div className="bg-yellow-50 p-8 rounded-xl border border-yellow-200 text-center">

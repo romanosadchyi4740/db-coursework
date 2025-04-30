@@ -65,6 +65,25 @@ export const getBooksByTitle = async (title, pageNo = 0, pageSize = 10) => {
   }
 };
 
+// Get books with multiple filters
+export const getFilteredBooks = async (filters, pageNo = 0, pageSize = 10) => {
+  try {
+    const { title, publisherId, authorId, genreId } = filters;
+    let url = `/${ENDPOINT}/filter?pageNo=${pageNo}&pageSize=${pageSize}`;
+
+    if (title) url += `&title=${encodeURIComponent(title)}`;
+    if (publisherId) url += `&publisherId=${publisherId}`;
+    if (authorId) url += `&authorId=${authorId}`;
+    if (genreId) url += `&genreId=${genreId}`;
+
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching filtered books:`, error);
+    throw error;
+  }
+};
+
 export default {
   getAllBooks,
   getBookById,
@@ -75,5 +94,6 @@ export default {
   getBooksByGenre,
   getBooksByAuthor,
   getBooksByPublisher,
-  getBooksByTitle
+  getBooksByTitle,
+  getFilteredBooks
 };

@@ -203,6 +203,32 @@ public class BookController {
         return ResponseEntity.ok(bookService.findAllByTitle(title, pageNo, pageSize));
     }
 
+    @GetMapping("/books/filter")
+    @Operation(summary = "Finding books with multiple filters",
+            description = "Gets books filtered by title, publisher, author, and/or genre")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = BooksResponse.class))
+            })
+    })
+    public ResponseEntity<BooksResponse> getFilteredBooks(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "publisherId", required = false) Integer publisherId,
+            @RequestParam(value = "authorId", required = false) Integer authorId,
+            @RequestParam(value = "genreId", required = false) Integer genreId,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        logger.info("Getting filtered books with title: {}, publisherId: {}, authorId: {}, genreId: {}", 
+                title, publisherId, authorId, genreId);
+        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), 
+                "Getting filtered books with title: " + title + 
+                ", publisherId: " + publisherId + 
+                ", authorId: " + authorId + 
+                ", genreId: " + genreId);
+        return ResponseEntity.ok(bookService.getFilteredBooks(title, publisherId, authorId, genreId, pageNo, pageSize));
+    }
+
 //    public ResponseEntity<BooksResponse> getFilteredBooks(
 //            @RequestParam(value = "title", required = false) String title,
 //            @RequestParam(value = "publisherId", required = false) Integer publisherId,

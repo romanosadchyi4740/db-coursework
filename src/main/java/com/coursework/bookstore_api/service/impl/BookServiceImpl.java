@@ -127,15 +127,46 @@ public class BookServiceImpl implements BookService {
         return PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
     }
 
-//    @Override
-//    public BooksResponse getFilteredBooks(String title, Integer publisherId, Integer authorId, Integer genreId,
-//                                          int pageNo, int pageSize) {
-//        Pageable pageable = PageRequest.of(pageNo, pageSize);
-//        Page<Book> booksPage = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
-//        List<Book> books = booksPage.getContent().stream()
-//                .filter(book -> book.getGenres().stream().filter()).toList();
-//        BooksResponse response = PageResponseFormatter.createBooksPageResponse(pageNo, pageSize, booksPage);
-//        response.setContent(response.getContent().stream().filter(book -> book.get));
-//        return null;
-//    }
+    @Override
+    public BooksResponse getFilteredBooks(String title, Integer publisherId, Integer authorId, Integer genreId,
+                                          int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        List<Book> filteredBooks;
+        if (title == null || title.isEmpty()) {
+            filteredBooks = bookRepository.findAll();
+        } else {
+            filteredBooks = bookRepository.findByTitleContainingIgnoreCase(title);
+        }
+
+        if (publisherId != null) {
+            filteredBooks = filteredBooks.stream()
+                .filter(book -> book.getPublisher().getId() == publisherId)
+                .toList();
+        }
+
+        if (authorId != null) {
+            filteredBooks = filteredBooks.stream()
+                .filter(book -> book.getAuthors().stream()
+                    .anyMatch(author -> author.getId() == authorId))
+                .toList();
+        }
+
+        if (genreId != null) {
+            filteredBooks = filteredBooks.stream()
+                .filter(book -> book.getGenres().stream()
+                    .anyMatch(genre -> genre.getId() == genreId))
+                .toList();
+        }
+
+        Page<Book> books = bookRepository.findAllByIdIn(filteredBooks.stream().map(Book::getId).toList(), pageable);
+        BooksResponse response = new BooksResponse();
+        response.setContent(books.getContent().stream().map(BookDto::from).toList());
+        response.setPageNo(pageNo);
+        response.setPageSize(pageSize);
+        response.setTotalElements(filteredBooks.size());
+        response.setTotalPages((int) Math.ceil((double) filteredBooks.size() / pageSize));
+        response.setLast(true);
+
+        return response;
+    }
 }
