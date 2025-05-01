@@ -2,6 +2,7 @@ package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.ReviewDto;
 import com.coursework.bookstore_api.service.ReviewService;
+import com.coursework.bookstore_api.util.datageneration.ReviewGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -83,5 +84,16 @@ public class ReviewController {
     public ResponseEntity<Void> deleteReview(@PathVariable int reviewId) {
         reviewService.deleteById(reviewId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/reviews/generate")
+    @Operation(summary = "Generating reviews",
+            description = "Generates reviews in the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok")
+    })
+    public ResponseEntity<String> generateReviews(@RequestParam(name = "reviewsCount") int reviewsCount) {
+        reviewService.generateReviews(reviewsCount);
+        return ResponseEntity.ok("Reviews generated");
     }
 }

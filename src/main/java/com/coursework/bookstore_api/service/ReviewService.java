@@ -14,4 +14,6 @@ public interface ReviewService {
     ReviewDto update(int id, ReviewDto reviewDto);
     
     void deleteById(int id);
+
+    void generateReviews(int reviewsCount);
 }

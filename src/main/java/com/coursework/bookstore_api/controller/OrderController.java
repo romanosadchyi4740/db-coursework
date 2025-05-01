@@ -142,4 +142,16 @@ public class OrderController {
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
     }
+
+    @GetMapping("/orders/generate")
+    @Operation(summary = "Generating orders",
+            description = "Generates orders in the DB")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok")
+    })
+    public ResponseEntity<String> generateOrders(@RequestParam(name = "ordersCount") int ordersCount) {
+        logger.info("Generating {} orders", ordersCount);
+        orderService.generateOrders(ordersCount);
+        return ResponseEntity.ok("Orders generated");
+    }
 }

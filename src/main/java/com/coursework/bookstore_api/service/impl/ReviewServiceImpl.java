@@ -10,6 +10,7 @@ import com.coursework.bookstore_api.repository.BookRepository;
 import com.coursework.bookstore_api.repository.CustomerRepository;
 import com.coursework.bookstore_api.repository.ReviewRepository;
 import com.coursework.bookstore_api.service.ReviewService;
+import com.coursework.bookstore_api.util.datageneration.ReviewGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +67,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteById(int id) {
         reviewRepository.deleteById(id);
+    }
+
+    @Override
+    public void generateReviews(int reviewsCount) {
+        ReviewGenerator.generateReviews(reviewsCount, reviewRepository, bookRepository, customerRepository);
     }
 }

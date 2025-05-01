@@ -6,14 +6,16 @@ import java.util.List;
 
 public interface OrderService {
     List<OrderDto> findAll();
-    
+
     OrderDto findById(int id);
-    
+
     OrderDto save(OrderDto orderDto);
-    
+
     OrderDto update(int id, OrderDto orderDto);
-    
+
     void deleteById(int id);
 
     List<OrderDto> findAllByCustomerId(int customerId);
+
+    void generateOrders(int ordersCount);
 }

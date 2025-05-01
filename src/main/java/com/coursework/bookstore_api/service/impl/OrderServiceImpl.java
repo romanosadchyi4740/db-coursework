@@ -14,6 +14,7 @@ import com.coursework.bookstore_api.repository.BookRepository;
 import com.coursework.bookstore_api.repository.CustomerRepository;
 import com.coursework.bookstore_api.repository.OrderRepository;
 import com.coursework.bookstore_api.service.OrderService;
+import com.coursework.bookstore_api.util.datageneration.OrderGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
@@ -124,5 +125,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> findAllByCustomerId(int customerId) {
         return orderRepository.findAllByCustomer_Id(customerId).stream().map(OrderDto::from).toList();
+    }
+
+    @Override
+    public void generateOrders(int ordersCount) {
+        OrderGenerator.generateOrders(ordersCount, orderRepository, bookRepository, customerRepository);
     }
 }
