@@ -15,7 +15,7 @@ import SignUp from './pages/SignUp'
 import Cart from './pages/Cart'
 import OrderHistory from './pages/OrderHistory'
 import Publishers from './pages/Publishers'
-// import PublisherDetails from './pages/PublisherDetails'
+import PublisherDetails from './pages/PublisherDetails'
 import Customers from './pages/Customers'
 // import CustomerDetails from './pages/CustomerDetails'
 import Orders from './pages/Orders'
@@ -44,7 +44,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/order-history" element={<OrderHistory />} />
             <Route path="/publishers" element={<Publishers />} />
-            {/*<Route path="/publishers/:id" element={<PublisherDetails />} />*/}
+            <Route path="/publishers/:id" element={<PublisherDetails />} />
             <Route path="/customers" element={<Customers />} />
             {/*<Route path="/customers/:id" element={<CustomerDetails />} />*/}
             <Route path="/orders" element={<Orders />} />

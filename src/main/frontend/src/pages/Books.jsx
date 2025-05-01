@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import {
   getPaginatedBooks, 
   deleteBook, 
@@ -17,6 +17,7 @@ import { isAdmin } from '../services/authService';
 import { useCart } from '../context/CartContext';
 
 const Books = () => {
+  const [searchParams] = useSearchParams();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -49,13 +50,27 @@ const Books = () => {
         setGenres(genresData);
         setAuthors(authorsData);
         setPublishers(publishersData);
+
+        // Check URL parameters for pre-selected filters after options are loaded
+        const authorId = searchParams.get('authorId');
+        const publisherId = searchParams.get('publisherId');
+        const genreId = searchParams.get('genreId');
+        const title = searchParams.get('title');
+
+        if (authorId) setSelectedAuthor(authorId);
+        if (publisherId) setSelectedPublisher(publisherId);
+        if (genreId) setSelectedGenre(genreId);
+        if (title) {
+          setInputTitle(title);
+          setSearchTitle(title);
+        }
       } catch (err) {
         console.error('Failed to fetch filter options:', err);
       }
     };
 
     fetchFilterOptions();
-  }, []);
+  }, [searchParams]);
 
   // Fetch books based on active filters
   useEffect(() => {
@@ -156,7 +171,7 @@ const Books = () => {
     setCurrentPage(0);
   };
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) return <div className="text-center py-10 text-gray-700">Loading...</div>;
   if (error) return <div className="text-center py-10 text-red-600">{error}</div>;
 
   const userIsAdmin = isAdmin();

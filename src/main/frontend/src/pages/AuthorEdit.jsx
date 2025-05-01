@@ -36,7 +36,7 @@ const AuthorEdit = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) return <div className="text-center py-10 text-gray-700">Loading...</div>;
   if (error) return <div className="text-center py-10 text-red-600">{error}</div>;
   if (!author) return <div className="text-center py-10">Author not found</div>;
 

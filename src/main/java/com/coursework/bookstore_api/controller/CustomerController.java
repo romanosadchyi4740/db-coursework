@@ -1,9 +1,7 @@
 package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.CustomerDto;
-import com.coursework.bookstore_api.model.LogLevel;
 import com.coursework.bookstore_api.service.CustomerService;
-import com.coursework.bookstore_api.service.DatabaseLoggerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,7 +25,6 @@ public class CustomerController {
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     private final CustomerService customerService;
-    private final DatabaseLoggerService databaseLoggerService;
 
     @GetMapping("/customers")
     @Operation(summary = "Finding all the customers from the DB",
@@ -40,7 +37,6 @@ public class CustomerController {
     })
     public ResponseEntity<List<CustomerDto>> getCustomers() {
         logger.info("Getting all customers from the DB");
-        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting all customers from the DB");
         return ResponseEntity.ok(customerService.findAll());
     }
 
@@ -55,7 +51,6 @@ public class CustomerController {
     })
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable int customerId) {
         logger.info("Getting a customer from the DB by id: {}", customerId);
-        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Getting a customer from the DB by id: " + customerId);
         return ResponseEntity.ok(customerService.findById(customerId));
     }
 
@@ -70,7 +65,6 @@ public class CustomerController {
     })
     public ResponseEntity<CustomerDto> createCustomer(@RequestBody CustomerDto customerDto) {
         logger.info("Creating a new customer in the DB: {}", customerDto);
-        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Creating a new customer in the DB: " + customerDto);
         return new ResponseEntity<>(customerService.save(customerDto), HttpStatus.CREATED);
     }
 
@@ -85,7 +79,6 @@ public class CustomerController {
     })
     public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int customerId, @RequestBody CustomerDto customerDto) {
         logger.info("Updating an existing customer in the DB with id: {}, data: {}", customerId, customerDto);
-        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Updating an existing customer in the DB with id: " + customerId + ", data: " + customerDto);
         return ResponseEntity.ok(customerService.update(customerId, customerDto));
     }
 
@@ -97,7 +90,6 @@ public class CustomerController {
     })
     public ResponseEntity<Void> deleteCustomer(@PathVariable int customerId) {
         logger.info("Deleting a customer from the DB by id: {}", customerId);
-        databaseLoggerService.saveLog(LogLevel.INFO, logger.getName(), "Deleting a customer from the DB by id: " + customerId);
         customerService.deleteById(customerId);
         return ResponseEntity.noContent().build();
     }
