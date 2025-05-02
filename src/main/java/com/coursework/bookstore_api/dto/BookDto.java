@@ -41,7 +41,10 @@ public class BookDto {
         dto.languageId = book.getLanguage().getId();
         dto.genreNames = book.getGenres().stream().map(Genre::getGenreName).toList();
         dto.genreIds = book.getGenres().stream().map(Genre::getId).toList();
-        dto.reviewIds = book.getReviews().stream().map(Review::getId).toList();
+        if (book.getReviews() == null)
+            dto.reviewIds = new ArrayList<>();
+        else
+            dto.reviewIds = book.getReviews().stream().map(Review::getId).toList();
         return dto;
     }
 
