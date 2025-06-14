@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "LanguageController", description = "Provides all operations with languages")
 public class LanguageController {
     private static final Logger logger = LoggerFactory.getLogger(LanguageController.class);

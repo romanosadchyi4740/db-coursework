@@ -31,6 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "BookController", description = "Provides all operations with books")
 public class BookController {
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);

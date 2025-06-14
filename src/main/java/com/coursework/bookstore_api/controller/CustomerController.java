@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "CustomerController", description = "Provides all operations with customers")
 public class CustomerController {
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);

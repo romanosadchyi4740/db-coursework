@@ -2,7 +2,6 @@ package com.coursework.bookstore_api.controller;
 
 import com.coursework.bookstore_api.dto.ReviewDto;
 import com.coursework.bookstore_api.service.ReviewService;
-import com.coursework.bookstore_api.util.datageneration.ReviewGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "ReviewController", description = "Provides all operations with reviews")
 public class ReviewController {
     private final ReviewService reviewService;

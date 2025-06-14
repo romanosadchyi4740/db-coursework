@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "AuthorController", description = "Provides all operations with authors")
 public class AuthorController {
     private static final Logger logger = LoggerFactory.getLogger(AuthorController.class);

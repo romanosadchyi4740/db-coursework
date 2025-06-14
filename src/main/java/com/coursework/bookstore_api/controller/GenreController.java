@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "GenreController", description = "Provides all operations with genres")
 public class GenreController {
     private static final Logger logger = LoggerFactory.getLogger(GenreController.class);

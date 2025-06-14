@@ -28,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "OrderController", description = "Provides all operations with orders")
 public class OrderController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);

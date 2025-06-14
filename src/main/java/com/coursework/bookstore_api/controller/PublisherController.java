@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "PublisherController", description = "Provides all operations with publishers")
 public class PublisherController {
     private static final Logger logger = LoggerFactory.getLogger(PublisherController.class);
