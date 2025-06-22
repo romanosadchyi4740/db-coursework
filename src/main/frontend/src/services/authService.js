@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const AUTH_URL = '/auth';
+const AUTH_URL = 'http://18.193.48.5:8080/auth';
 
 const api = axios.create({
   baseURL: AUTH_URL,

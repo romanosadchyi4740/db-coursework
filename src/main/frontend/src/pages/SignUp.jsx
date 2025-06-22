@@ -55,14 +55,14 @@ const SignUp = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-8 bg-gradient-to-b from-blue-50 to-white rounded-xl shadow-lg border border-blue-100">
+    <div className="max-w-md mx-auto mt-10 p-8 bg-gradient-to-b from-bookstore-lighter to-white rounded-xl shadow-lg border border-bookstore-light">
       <div className="text-center mb-8">
-        <div className="inline-block p-3 bg-blue-100 rounded-full mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+        <div className="inline-block p-3 bg-bookstore-lighter rounded-full mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-bookstore-primary" viewBox="0 0 20 20" fill="currentColor">
             <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
           </svg>
         </div>
-        <h1 className="text-3xl font-bold text-blue-700 drop-shadow-sm">Create an Account</h1>
+        <h1 className="text-3xl font-bold text-bookstore-dark drop-shadow-sm font-serif">Create an Account</h1>
         <p className="text-gray-600 mt-2">Join our bookstore community</p>
       </div>
 
@@ -78,13 +78,13 @@ const SignUp = () => {
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
         <div className="mb-5">
           <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center" htmlFor="username">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-bookstore-primary" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
             </svg>
             Username
           </label>
           <input
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bookstore-accent focus:border-bookstore-accent transition-all"
             id="username"
             type="text"
             name="username"
@@ -99,14 +99,14 @@ const SignUp = () => {
 
         <div className="mb-5">
           <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center" htmlFor="email">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-bookstore-primary" viewBox="0 0 20 20" fill="currentColor">
               <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
               <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
             </svg>
             Email
           </label>
           <input
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bookstore-accent focus:border-bookstore-accent transition-all"
             id="email"
             type="email"
             name="email"
@@ -119,13 +119,13 @@ const SignUp = () => {
 
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center" htmlFor="password">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-bookstore-primary" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
             </svg>
             Password
           </label>
           <input
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-500 focus:border-brown-500 transition-all"
             id="password"
             type="password"
             name="password"
@@ -140,7 +140,7 @@ const SignUp = () => {
 
         <div className="mb-6">
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 w-full transition-colors shadow-md hover:shadow-lg flex items-center justify-center"
+            className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50 w-full transition-colors shadow-md hover:shadow-lg flex items-center justify-center"
             type="submit"
             disabled={loading}
           >
@@ -166,7 +166,7 @@ const SignUp = () => {
         <div className="text-center">
           <p className="text-gray-600">
             Already have an account?{' '}
-            <Link to="/sign-in" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+            <Link to="/sign-in" className="text-brown-600 hover:text-brown-800 font-medium transition-colors">
               Sign In
             </Link>
           </p>

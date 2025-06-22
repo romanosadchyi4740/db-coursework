@@ -26,7 +26,7 @@ import { CartProvider } from './context/CartContext'
 function App() {
   return (
     <CartProvider>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-bookstore-paper">
         <Navbar />
         <div className="container mx-auto px-4 py-8">
           <Routes>

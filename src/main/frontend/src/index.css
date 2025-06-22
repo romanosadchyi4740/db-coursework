@@ -1,14 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
   font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: #654321;
+  background-color: #fefcf8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -19,11 +20,266 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: linear-gradient(135deg, #fefcf8 0%, #fdf8f3 100%);
+  background-attachment: fixed;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #8b4513;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2rem;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+/* Links */
+a {
+  color: #cd853f;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+a:hover {
+  color: #8b4513;
+}
+
+a:focus {
+  outline: 2px solid #deb887;
+  outline-offset: 2px;
+}
+
+/* Custom Components */
+@layer components {
+  /* Button Styles */
+  .btn-primary {
+    @apply bg-gradient-to-r from-bookstore-primary to-bookstore-secondary text-white px-6 py-3 rounded-lg font-medium 
+           hover:from-bookstore-secondary hover:to-bookstore-accent transform hover:scale-105 transition-all duration-200 
+           shadow-book focus:outline-none focus:ring-2 focus:ring-bookstore-accent focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply bg-bookstore-surface text-bookstore-dark px-6 py-3 rounded-lg font-medium 
+           border border-bookstore-accent hover:bg-bookstore-accent hover:border-bookstore-primary 
+           transform hover:scale-105 transition-all duration-200 shadow-elegant 
+           focus:outline-none focus:ring-2 focus:ring-bookstore-primary focus:ring-offset-2;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-bookstore-success to-green-600 text-white px-6 py-3 rounded-lg font-medium 
+           hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-200 
+           shadow-book focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2;
+  }
+
+  .btn-danger {
+    @apply bg-gradient-to-r from-bookstore-error to-red-700 text-white px-6 py-3 rounded-lg font-medium 
+           hover:from-red-700 hover:to-red-800 transform hover:scale-105 transition-all duration-200 
+           shadow-book focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+  }
+
+  .btn-warning {
+    @apply bg-gradient-to-r from-bookstore-warning to-orange-600 text-white px-6 py-3 rounded-lg font-medium 
+           hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-200 
+           shadow-book focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2;
+  }
+
+  /* Card Styles */
+  .card {
+    @apply bg-white p-8 rounded-2xl shadow-book hover:shadow-book-hover 
+           transition-all duration-300 border border-bookstore-light 
+           hover:border-bookstore-accent backdrop-blur-sm;
+  }
+
+  .card-elegant {
+    @apply bg-gradient-to-br from-white to-bookstore-lighter p-8 rounded-2xl 
+           shadow-book hover:shadow-book-hover transition-all duration-300 
+           border border-bookstore-light hover:border-bookstore-accent;
+  }
+
+  .card-glass {
+    @apply bg-white bg-opacity-80 backdrop-blur-md p-8 rounded-2xl 
+           shadow-book hover:shadow-brown-glow transition-all duration-300 
+           border border-white border-opacity-20;
+  }
+
+  /* Form Styles */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-lg border border-bookstore-accent 
+           focus:border-bookstore-primary focus:ring-2 focus:ring-bookstore-primary focus:ring-opacity-50 
+           transition-all duration-200 bg-white placeholder-bookstore-secondary;
+  }
+
+  .form-select {
+    @apply w-full px-4 py-3 rounded-lg border border-bookstore-accent 
+           focus:border-bookstore-primary focus:ring-2 focus:ring-bookstore-primary focus:ring-opacity-50 
+           transition-all duration-200 bg-white cursor-pointer;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-bookstore-dark mb-2;
+  }
+
+  /* Navigation Styles */
+  .nav-link {
+    @apply text-white hover:text-bookstore-accent transition-colors duration-200 
+           relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 
+           after:bg-bookstore-accent after:transition-all after:duration-300 
+           hover:after:w-full;
+  }
+
+  .nav-link.active {
+    @apply text-bookstore-accent after:w-full;
+  }
+
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-gradient-to-r from-bookstore-primary to-bookstore-secondary text-white;
+  }
+
+  .badge-secondary {
+    @apply bg-gradient-to-r from-bookstore-secondary to-bookstore-accent text-bookstore-dark;
+  }
+
+  .badge-accent {
+    @apply bg-bookstore-accent text-bookstore-dark;
+  }
+
+  .badge-success {
+    @apply bg-gradient-to-r from-bookstore-success to-green-600 text-white;
+  }
+
+  .badge-warning {
+    @apply bg-gradient-to-r from-bookstore-warning to-orange-600 text-white;
+  }
+
+  .badge-error {
+    @apply bg-gradient-to-r from-bookstore-error to-red-700 text-white;
+  }
+
+  /* Layout Components */
+  .container-elegant {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-12 lg:py-16;
+  }
+
+  /* Animation Classes */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  /* Special Effects */
+  .text-gradient {
+    @apply bg-gradient-to-r from-bookstore-primary to-bookstore-secondary 
+           bg-clip-text text-transparent;
+  }
+
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-bookstore-gold to-bookstore-copper 
+           bg-clip-text text-transparent;
+  }
+
+  .border-gradient {
+    @apply border-2 border-transparent bg-gradient-to-r from-bookstore-primary to-bookstore-secondary 
+           bg-clip-border;
+  }
+
+  /* Book-specific styles */
+  .book-card {
+    @apply bg-white rounded-xl shadow-book hover:shadow-book-hover 
+           transition-all duration-300 overflow-hidden ;
+  }
+
+  .book-cover {
+    @apply w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300;
+  }
+
+  /* Loading states */
+  .loading-skeleton {
+    @apply animate-pulse bg-gradient-to-r from-bookstore-light to-bookstore-accent 
+           rounded-lg;
+  }
+
+  /* Responsive text */
+  .responsive-text {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white bg-opacity-20 backdrop-blur-md border border-white border-opacity-30;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fdf8f3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #8b4513, #cd853f);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #cd853f, #deb887);
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid #deb887;
+  outline-offset: 2px;
+}
+
+/* Selection styles */
+::selection {
+  background-color: #deb887;
+  color: #8b4513;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
   }
 }

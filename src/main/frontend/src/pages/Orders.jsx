@@ -83,7 +83,7 @@ const Orders = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brown-500"></div>
       </div>
     );
   }
@@ -102,7 +102,7 @@ const Orders = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-blue-600">Orders</h1>
+        <h1 className="text-3xl font-bold text-brown-600">Orders</h1>
 
         {/* View toggle buttons and download button */}
         {orders.length > 0 && (
@@ -118,7 +118,7 @@ const Orders = () => {
               onClick={() => setViewMode('table')}
               className={`px-4 py-2 rounded-lg ${
                 viewMode === 'table'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-amber-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -128,7 +128,7 @@ const Orders = () => {
               onClick={() => setViewMode('graph')}
               className={`px-4 py-2 rounded-lg ${
                 viewMode === 'graph'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-amber-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -167,7 +167,7 @@ const Orders = () => {
                   {/*    order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :*/}
                   {/*    order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :*/}
                   {/*    order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :*/}
-                  {/*    'bg-blue-100 text-blue-800'*/}
+                  {/*    'bg-amber-100 text-brown-800'*/}
                   {/*  }`}>*/}
                   {/*    {order.status}*/}
                   {/*  </span>*/}

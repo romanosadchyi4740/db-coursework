@@ -45,7 +45,7 @@ const Authors = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-blue-600">Authors</h1>
+        <h1 className="text-3xl font-bold text-brown-600">Authors</h1>
         {userIsAdmin && (
           <Link 
             to="/authors/new" 
@@ -66,7 +66,7 @@ const Authors = () => {
               <div className="flex justify-between">
                 <Link 
                   to={`/authors/${author.id}`} 
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-brown-600 hover:text-brown-800"
                 >
                   View Details
                 </Link>

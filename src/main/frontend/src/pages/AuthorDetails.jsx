@@ -47,7 +47,7 @@ const AuthorDetails = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-start mb-6">
-        <h1 className="text-3xl font-bold text-blue-600">{author.name}</h1>
+        <h1 className="text-3xl font-bold text-brown-600">{author.name}</h1>
         {userIsAdmin && (
           <div className="space-x-2">
             <Link 
@@ -76,13 +76,13 @@ const AuthorDetails = () => {
       <div className="flex space-x-4">
         <Link 
           to="/authors"
-          className="text-blue-600 hover:text-blue-800"
+          className="text-brown-600 hover:text-brown-800"
         >
           Back to Authors
         </Link>
         <button
           onClick={() => navigate(`/books?authorId=${author.id}`)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-amber-600 text-white px-4 py-2 rounded hover:bg-brown-700"
         >
           View Books by this Author
         </button>

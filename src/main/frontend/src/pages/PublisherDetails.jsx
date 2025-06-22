@@ -47,7 +47,7 @@ const PublisherDetails = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-start mb-6">
-        <h1 className="text-3xl font-bold text-blue-600">{publisher.publisherName}</h1>
+        <h1 className="text-3xl font-bold text-brown-600">{publisher.publisherName}</h1>
         {userIsAdmin && (
           <div className="space-x-2">
             <Link 
@@ -76,13 +76,13 @@ const PublisherDetails = () => {
       <div className="flex space-x-4">
         <Link 
           to="/publishers"
-          className="text-blue-600 hover:text-blue-800"
+          className="text-brown-600 hover:text-brown-800"
         >
           Back to Publishers
         </Link>
         <button
           onClick={() => navigate(`/books?publisherId=${publisher.id}`)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700"
         >
           View Books from this Publisher
         </button>

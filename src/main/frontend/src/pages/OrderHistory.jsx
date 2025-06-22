@@ -48,14 +48,14 @@ const OrderHistory = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-blue-600">Order History</h1>
+      <h1 className="text-3xl font-bold mb-6 text-brown-600">Order History</h1>
       
       {orders.length === 0 ? (
         <div className="text-center py-10">
           <p className="text-xl text-gray-600">You haven't placed any orders yet</p>
           <button 
             onClick={() => navigate('/books')}
-            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="mt-4 bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700"
           >
             Browse Books
           </button>
@@ -114,7 +114,7 @@ const OrderHistory = () => {
         <div className="mt-6">
           <button
             onClick={() => navigate('/books')}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700"
           >
             Continue Shopping
           </button>
