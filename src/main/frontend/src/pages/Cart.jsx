@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../services/orderService';
 import { isAuthenticated, getUsername } from '../services/authService';
+import Popup from '../components/Popup';
 
 const Cart = () => {
   const { cartItems, totalPrice, updateQuantity, removeFromCart, clearCart } =
     useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [orderTotal, setOrderTotal] = useState(0);
   const navigate = useNavigate();
 
   const handleQuantityChange = (id, newQuantity) => {
@@ -47,9 +50,9 @@ const Cart = () => {
 
       console.log(orderData);
       await createOrder(orderData);
+      setOrderTotal(totalPrice);
       clearCart();
-      navigate('/');
-      alert('Order placed successfully!');
+      setShowSuccessPopup(true);
     } catch (error) {
       console.error('Checkout error:', error);
       setCheckoutError(
@@ -65,6 +68,11 @@ const Cart = () => {
     } finally {
       setIsCheckingOut(false);
     }
+  };
+
+  const handlePopupClose = () => {
+    setShowSuccessPopup(false);
+    navigate('/');
   };
 
   return (
@@ -345,6 +353,18 @@ const Cart = () => {
           </>
         )}
       </div>
+      {showSuccessPopup && (
+        <Popup
+          isOpen={showSuccessPopup}
+          title="Order Placed Successfully!"
+          message={`Thank you for your order! Your books are being prepared for shipment. Order total: $${orderTotal.toFixed(
+            2
+          )}. You can track your order in your order history.`}
+          type="success"
+          onClose={handlePopupClose}
+          autoClose={false}
+        />
+      )}
     </div>
   );
 };

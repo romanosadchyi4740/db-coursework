@@ -199,6 +199,10 @@ a:focus {
     animation: slideUp 0.4s ease-out;
   }
 
+  .animate-popup-in {
+    animation: popupIn 0.3s ease-out;
+  }
+
   /* Special Effects */
   .text-gradient {
     @apply bg-gradient-to-r from-bookstore-primary to-bookstore-secondary 
@@ -218,7 +222,7 @@ a:focus {
   /* Book-specific styles */
   .book-card {
     @apply bg-white rounded-xl shadow-book hover:shadow-book-hover 
-           transition-all duration-300 overflow-hidden ;
+           transition-all duration-300 overflow-hidden;
   }
 
   .book-cover {
@@ -239,6 +243,16 @@ a:focus {
   /* Glass morphism effect */
   .glass {
     @apply bg-white bg-opacity-20 backdrop-blur-md border border-white border-opacity-30;
+  }
+
+  /* Popup Styles */
+  .popup-backdrop {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  }
+
+  .popup-content {
+    @apply relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 
+           transform transition-all duration-300 scale-100 animate-popup-in;
   }
 }
 
@@ -281,5 +295,36 @@ a:focus {
   body {
     background: white !important;
     color: black !important;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popupIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
